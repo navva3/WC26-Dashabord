@@ -4,6 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NAVVA+ - Tournament Command Matrix</title>
+  <meta name="theme-color" content="#02050f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="NAVVA+" />
+  <meta name="application-name" content="NAVVA+" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" type="image/png" sizes="192x192" href="./navva-icon-192.png" />
+  <link rel="apple-touch-icon" href="./navva-icon-192.png" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
@@ -406,56 +414,55 @@
       display:flex;
       align-items:center;
       justify-content:center;
-      min-height: 48px;
-      padding: 10px 16px;
+      min-height: 40px;
+      padding: 8px 12px;
       border-radius: 999px;
       border: 1px solid var(--theme-border-strong);
-      background: color-mix(in srgb, var(--theme-card) 90%, transparent);
+      background: color-mix(in srgb, var(--theme-card) 82%, transparent);
       color: var(--theme-text);
-      font-size: .96rem;
+      font-size: .88rem;
       font-weight: 900;
       text-transform: uppercase;
-      letter-spacing: 1.6px;
+      letter-spacing: 1.3px;
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       text-align:center;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,.05), 0 0 0 1px rgba(255,255,255,.03), 0 10px 22px rgba(0,0,0,.24);
-      text-shadow: 0 0 12px rgba(255,255,255,.12);
+      box-shadow: 0 0 0 1px rgba(255,255,255,.02), 0 8px 18px rgba(0,0,0,.18);
     }
     .bracket-stage-heads .stage-head:nth-child(1) {
       color: var(--theme-cyan);
-      border-color: color-mix(in srgb, var(--theme-cyan) 78%, var(--theme-border));
-      background: linear-gradient(180deg, color-mix(in srgb, var(--theme-cyan) 26%, var(--theme-card)), color-mix(in srgb, var(--theme-cyan) 12%, var(--theme-card)));
-      box-shadow: inset 10px 0 0 color-mix(in srgb, var(--theme-cyan) 86%, transparent), 0 0 0 1px color-mix(in srgb, var(--theme-cyan) 30%, transparent), 0 0 18px color-mix(in srgb, var(--theme-cyan) 18%, transparent);
+      border-color: color-mix(in srgb, var(--theme-cyan) 68%, var(--theme-border));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--theme-cyan) 18%, var(--theme-card)), color-mix(in srgb, var(--theme-cyan) 8%, var(--theme-card)));
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--theme-cyan) 22%, transparent), 0 8px 18px rgba(0,0,0,.18);
     }
     .bracket-stage-heads .stage-head:nth-child(2) {
       color: var(--theme-pink);
-      border-color: color-mix(in srgb, var(--theme-pink) 78%, var(--theme-border));
-      background: linear-gradient(180deg, color-mix(in srgb, var(--theme-pink) 26%, var(--theme-card)), color-mix(in srgb, var(--theme-pink) 12%, var(--theme-card)));
-      box-shadow: inset 10px 0 0 color-mix(in srgb, var(--theme-pink) 86%, transparent), 0 0 0 1px color-mix(in srgb, var(--theme-pink) 30%, transparent), 0 0 18px color-mix(in srgb, var(--theme-pink) 18%, transparent);
+      border-color: color-mix(in srgb, var(--theme-pink) 68%, var(--theme-border));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--theme-pink) 18%, var(--theme-card)), color-mix(in srgb, var(--theme-pink) 8%, var(--theme-card)));
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--theme-pink) 22%, transparent), 0 8px 18px rgba(0,0,0,.18);
     }
     .bracket-stage-heads .stage-head:nth-child(3) {
       color: var(--theme-orange);
-      border-color: color-mix(in srgb, var(--theme-orange) 78%, var(--theme-border));
-      background: linear-gradient(180deg, color-mix(in srgb, var(--theme-orange) 26%, var(--theme-card)), color-mix(in srgb, var(--theme-orange) 12%, var(--theme-card)));
-      box-shadow: inset 10px 0 0 color-mix(in srgb, var(--theme-orange) 86%, transparent), 0 0 0 1px color-mix(in srgb, var(--theme-orange) 30%, transparent), 0 0 18px color-mix(in srgb, var(--theme-orange) 18%, transparent);
+      border-color: color-mix(in srgb, var(--theme-orange) 68%, var(--theme-border));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--theme-orange) 18%, var(--theme-card)), color-mix(in srgb, var(--theme-orange) 8%, var(--theme-card)));
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--theme-orange) 22%, transparent), 0 8px 18px rgba(0,0,0,.18);
     }
     .bracket-stage-heads .stage-head:nth-child(4) {
       color: var(--theme-purple);
-      border-color: color-mix(in srgb, var(--theme-purple) 78%, var(--theme-border));
-      background: linear-gradient(180deg, color-mix(in srgb, var(--theme-purple) 26%, var(--theme-card)), color-mix(in srgb, var(--theme-purple) 12%, var(--theme-card)));
-      box-shadow: inset 10px 0 0 color-mix(in srgb, var(--theme-purple) 86%, transparent), 0 0 0 1px color-mix(in srgb, var(--theme-purple) 30%, transparent), 0 0 18px color-mix(in srgb, var(--theme-purple) 18%, transparent);
+      border-color: color-mix(in srgb, var(--theme-purple) 68%, var(--theme-border));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--theme-purple) 18%, var(--theme-card)), color-mix(in srgb, var(--theme-purple) 8%, var(--theme-card)));
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--theme-purple) 22%, transparent), 0 8px 18px rgba(0,0,0,.18);
     }
     .bracket-stage-heads .stage-head:nth-child(5) {
       color: var(--theme-green);
-      border-color: color-mix(in srgb, var(--theme-green) 78%, var(--theme-border));
-      background: linear-gradient(180deg, color-mix(in srgb, var(--theme-green) 24%, var(--theme-card)), color-mix(in srgb, var(--theme-green) 10%, var(--theme-card)));
-      box-shadow: inset 10px 0 0 color-mix(in srgb, var(--theme-green) 86%, transparent), 0 0 0 1px color-mix(in srgb, var(--theme-green) 30%, transparent), 0 0 18px color-mix(in srgb, var(--theme-green) 18%, transparent);
+      border-color: color-mix(in srgb, var(--theme-green) 68%, var(--theme-border));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--theme-green) 18%, var(--theme-card)), color-mix(in srgb, var(--theme-green) 8%, var(--theme-card)));
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--theme-green) 22%, transparent), 0 8px 18px rgba(0,0,0,.18);
     }
     .bracket-stage-heads .stage-head:nth-child(6) {
       color: var(--theme-gold);
-      border-color: color-mix(in srgb, var(--theme-gold) 82%, var(--theme-border));
-      background: linear-gradient(180deg, color-mix(in srgb, var(--theme-gold) 28%, var(--theme-card)), color-mix(in srgb, var(--theme-gold) 12%, var(--theme-card)));
-      box-shadow: inset 10px 0 0 color-mix(in srgb, var(--theme-gold) 88%, transparent), 0 0 0 1px color-mix(in srgb, var(--theme-gold) 34%, transparent), 0 0 18px color-mix(in srgb, var(--theme-gold) 18%, transparent);
+      border-color: color-mix(in srgb, var(--theme-gold) 68%, var(--theme-border));
+      background: linear-gradient(180deg, color-mix(in srgb, var(--theme-gold) 20%, var(--theme-card)), color-mix(in srgb, var(--theme-gold) 8%, var(--theme-card)));
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--theme-gold) 22%, transparent), 0 8px 18px rgba(0,0,0,.18);
     }
     .bracket-canvas-wrap {
       position: relative;
@@ -650,6 +657,146 @@
       .group-route-column { grid-template-columns: repeat(3, minmax(220px, 1fr)); }
       .bracket-shell { height: 900px; min-height: 900px; max-height: 900px; }
     }
+
+.news-meta-row {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  padding: 0 14px 14px;
+  border-top: 1px solid rgba(127,147,170,.08);
+}
+.news-status {
+  padding: 8px 12px;
+  border-radius: 999px;
+  border:1px solid var(--theme-border);
+  background: rgba(127,147,170,.08);
+  color: var(--theme-muted);
+  font-size: .74rem;
+  font-weight: 800;
+  letter-spacing: .4px;
+}
+.news-sources {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+}
+.source-pill-live {
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border:1px solid color-mix(in srgb, var(--source-accent) 48%, var(--theme-border));
+  background: color-mix(in srgb, var(--source-accent) 14%, var(--theme-card));
+  color: var(--theme-text);
+  text-decoration:none;
+  font-size:.74rem;
+  font-weight:800;
+  transition:.16s ease;
+}
+.source-pill-live:hover { transform: translateY(-1px); box-shadow: 0 0 0 1px color-mix(in srgb, var(--source-accent) 35%, transparent); }
+.venue-resource-headline {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-bottom: 14px;
+}
+.resource-status {
+  padding: 8px 12px;
+  border-radius:999px;
+  border:1px solid var(--theme-border);
+  background: rgba(127,147,170,.08);
+  color: var(--theme-muted);
+  font-size:.74rem;
+  font-weight:800;
+  letter-spacing:.4px;
+}
+.venue-resource-grid {
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap:14px;
+}
+.venue-resource-card {
+  border:1px solid var(--theme-border);
+  border-radius:16px;
+  background: var(--theme-card);
+  padding:14px;
+  display:grid;
+  gap:12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,.12);
+  transition:.16s ease;
+}
+.venue-resource-card:hover { transform: translateY(-1px); box-shadow: 0 0 0 1px var(--theme-border-strong), 0 10px 22px rgba(0,0,0,.16); }
+.venue-resource-top {
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+}
+.venue-resource-top h4 { font-size: .96rem; line-height:1.25; }
+.venue-resource-sub { color: var(--theme-muted); font-size:.76rem; margin-top:4px; }
+.venue-weather-chip {
+  padding:7px 10px;
+  border-radius:999px;
+  border:1px solid color-mix(in srgb, var(--theme-cyan) 45%, var(--theme-border));
+  background: color-mix(in srgb, var(--theme-cyan) 12%, var(--theme-card));
+  color: var(--theme-cyan);
+  font-size:.72rem;
+  font-weight:900;
+  white-space:nowrap;
+}
+.resource-line {
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  align-items:flex-start;
+  padding:7px 0;
+  border-top:1px solid rgba(127,147,170,.08);
+  font-size:.8rem;
+}
+.resource-line:first-of-type { border-top:none; padding-top:0; }
+.resource-line span { color: var(--theme-muted); font-size:.72rem; font-weight:800; letter-spacing:.3px; text-transform:uppercase; }
+.resource-line strong { text-align:right; font-size:.8rem; line-height:1.4; }
+.resource-links, .modal-resource-links {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.resource-link {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:8px 11px;
+  border-radius:999px;
+  border:1px solid var(--theme-border);
+  background: rgba(127,147,170,.08);
+  color: var(--theme-text);
+  text-decoration:none;
+  font-size:.73rem;
+  font-weight:900;
+  transition:.16s ease;
+}
+.resource-link:hover { transform: translateY(-1px); border-color: var(--theme-border-strong); }
+.resource-link.primary {
+  border-color: color-mix(in srgb, var(--theme-cyan) 50%, var(--theme-border));
+  background: color-mix(in srgb, var(--theme-cyan) 14%, var(--theme-card));
+  color: var(--theme-cyan);
+}
+.resource-empty {
+  border:1px dashed var(--theme-border);
+  border-radius:14px;
+  padding:18px;
+  color: var(--theme-muted);
+  text-align:center;
+  font-weight:700;
+}
+.modal-resource-links { margin-top: 12px; }
+
     @media (max-width: 1200px) {
       .top-grid, .diagram-layout { grid-template-columns: 1fr; }
       .groups-tabs { grid-template-columns: repeat(3, 1fr); }
@@ -694,7 +841,7 @@
     <section class="panel">
       <div class="header">
         <div>
-          <h1>NAVVA<span class="brand-plus">+</span></h1>
+          <h1>NAVVA<span class="brand-plus">+</span> WorldCup 26</h1>
           <div class="sub">FIFA World Cup 2026 strategic map, schedule, groups, and knockout routing board</div>
         </div>
         <div class="header-about">
@@ -720,6 +867,10 @@
       <div class="ticker-wrap">
         <div class="ticker-label">World Cup News</div>
         <div class="ticker-viewport"><div class="ticker-track" id="tickerTrack"></div></div>
+      </div>
+      <div class="news-meta-row">
+        <div class="news-status" id="newsStatus">LIVE FEEDS • Loading source headlines...</div>
+        <div class="news-sources" id="newsSources"></div>
       </div>
     </section>
 
@@ -904,16 +1055,159 @@
         <div class="time-box"><span>UK BST</span><strong id="modalTimeUk">-</strong></div>
       </div>
       <a id="modalLink" class="img-link" href="#" target="_blank" rel="noopener noreferrer">Open stadium images</a>
+      <div class="modal-resource-links" id="modalResourceLinks"></div>
     </div>
   </div>
 
   <script>
     const COUNTRY_TOPOJSON_URL = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json';
-    const NEWS_LINKS = [
-      { label: 'FIFA • One Year to Go until the FIFA World Cup 26™', url: 'https://inside.fifa.com/organisation/media-releases/fifa-celebrates-one-year-to-go-until-the-fifa-world-cup-26' },
-      { label: 'MSN • Where to watch FIFA World Cup 2026 - live streams & schedule', url: 'https://www.msn.com/en-us/sports/other/where-to-watch-fifa-world-cup-2026-live-streams-schedule/ar-AA25axxO' },
-      { label: 'MSN • Format changes and new regulations set for expanded 2026 FIFA World Cup', url: 'https://www.msn.com/en-us/sports/fifa_world_cup/format-changes-and-new-regulations-set-for-expanded-2026-fifa-world-cup/ar-AA256iQP' }
-    ];
+
+    let deferredInstallPrompt = null;
+
+    function registerNavvaPwa() {
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js').catch(() => {});
+        });
+      }
+
+      window.addEventListener('beforeinstallprompt', (event) => {
+        event.preventDefault();
+        deferredInstallPrompt = event;
+        const syncNode = document.getElementById('syncNode');
+        if (syncNode) syncNode.textContent = 'SYNC: ONLINE • APP READY TO INSTALL';
+      });
+
+      window.addEventListener('appinstalled', () => {
+        deferredInstallPrompt = null;
+        const syncNode = document.getElementById('syncNode');
+        if (syncNode) syncNode.textContent = 'SYNC: ONLINE • APP INSTALLED';
+      });
+    }
+
+    
+const NEWS_FALLBACK_LINKS = [
+  {
+    source: 'FIFA',
+    title: 'FIFA World Cup 2026™ squads confirmed: 1,248 dreams, 48 teams and a truly global cast of players',
+    label: 'FIFA • FIFA World Cup 2026™ squads confirmed: 1,248 dreams, 48 teams and a truly global cast of players',
+    url: 'https://inside.fifa.com/organisation/media-releases/world-cup-2026-48-squads-confirmed'
+  },
+  {
+    source: 'BBC Sport',
+    title: 'World Cup 2026 new rules: The law changes explained - VAR, timewasting and substitutes',
+    label: 'BBC Sport • World Cup 2026 new rules: The law changes explained - VAR, timewasting and substitutes',
+    url: 'https://www.bbc.com/sport/football/articles/ce8jv326d7vo'
+  },
+  {
+    source: 'Reuters',
+    title: 'World Cup 2026: teams qualified, key players and fixtures',
+    label: 'Reuters • World Cup 2026: teams qualified, key players and fixtures',
+    url: 'https://www.reuters.com/sports/soccer/world-cup-2026-teams-qualified-key-players-fixtures-2026-06-11/'
+  },
+  {
+    source: 'ESPN',
+    title: "The World Cup of more: There's never been a tournament like this one",
+    label: "ESPN • The World Cup of more: There's never been a tournament like this one",
+    url: 'https://www.espn.com/soccer/story/_/id/49020473/2026-fifa-world-cup-more-never-tournament-infantino-trump'
+  },
+  {
+    source: 'Sky Sports',
+    title: 'World Cup 2026 fixture schedule and UK kick-off times: Day-by-day breakdown of all 104 matches including England and Scotland',
+    label: 'Sky Sports • World Cup 2026 fixture schedule and UK kick-off times: Day-by-day breakdown of all 104 matches including England and Scotland',
+    url: 'https://www.skysports.com/football/news/12098/13481245/world-cup-2026-fixture-schedule-and-uk-kick-off-times-day-by-day-breakdown-of-all-104-matches-including-england-scotland'
+  },
+  {
+    source: 'MSN',
+    title: 'Where to watch FIFA World Cup 2026 - live streams & schedule',
+    label: 'MSN • Where to watch FIFA World Cup 2026 - live streams & schedule',
+    url: 'https://www.msn.com/en-us/sports/other/where-to-watch-fifa-world-cup-2026-live-streams-schedule/ar-AA25axxO'
+  },
+  {
+    source: 'FOX Sports',
+    title: 'Open latest World Cup 2026 headlines',
+    label: 'FOX Sports • Open latest World Cup 2026 headlines',
+    url: 'https://www.foxsports.com/soccer'
+  },
+  {
+    source: 'CBS Sports',
+    title: 'Open latest World Cup 2026 headlines',
+    label: 'CBS Sports • Open latest World Cup 2026 headlines',
+    url: 'https://www.cbssports.com/soccer/'
+  },
+  {
+    source: 'Goal',
+    title: 'Open latest World Cup 2026 headlines',
+    label: 'Goal • Open latest World Cup 2026 headlines',
+    url: 'https://www.goal.com/en'
+  }
+];
+
+const LIVE_NEWS_SOURCES = [
+  {
+    name: 'FIFA',
+    domain: 'inside.fifa.com',
+    accent: '#00f0ff',
+    searchUrl: 'https://www.google.com/search?q=site%3Ainside.fifa.com+FIFA+World+Cup+2026',
+    feedQuery: 'site:inside.fifa.com ("World Cup 2026" OR "FIFA World Cup 26")'
+  },
+  {
+    name: 'BBC Sport',
+    domain: 'bbc.com',
+    accent: '#ff7eb6',
+    searchUrl: 'https://www.google.com/search?q=site%3Abbc.com%2Fsport+World+Cup+2026',
+    feedQuery: 'site:bbc.com/sport ("World Cup 2026" OR "FIFA World Cup 26")'
+  },
+  {
+    name: 'Reuters',
+    domain: 'reuters.com',
+    accent: '#ffaa00',
+    searchUrl: 'https://www.google.com/search?q=site%3Areuters.com+World+Cup+2026',
+    feedQuery: 'site:reuters.com ("World Cup 2026" OR "FIFA World Cup 26") soccer'
+  },
+  {
+    name: 'ESPN',
+    domain: 'espn.com',
+    accent: '#22c55e',
+    searchUrl: 'https://www.google.com/search?q=site%3Aespn.com%2Fsoccer+World+Cup+2026',
+    feedQuery: 'site:espn.com/soccer ("World Cup 2026" OR "FIFA World Cup 26")'
+  },
+  {
+    name: 'Sky Sports',
+    domain: 'skysports.com',
+    accent: '#4f8cff',
+    searchUrl: 'https://www.google.com/search?q=site%3Askysports.com+World+Cup+2026',
+    feedQuery: 'site:skysports.com ("World Cup 2026" OR "FIFA World Cup 26") football'
+  },
+  {
+    name: 'MSN',
+    domain: 'msn.com',
+    accent: '#b600ff',
+    searchUrl: 'https://www.google.com/search?q=site%3Amsn.com+World+Cup+2026',
+    feedQuery: 'site:msn.com ("World Cup 2026" OR "FIFA World Cup 26") sports'
+  },
+  {
+    name: 'FOX Sports',
+    domain: 'foxsports.com',
+    accent: '#ff6b6b',
+    searchUrl: 'https://www.google.com/search?q=site%3Afoxsports.com+World+Cup+2026',
+    feedQuery: 'site:foxsports.com ("World Cup 2026" OR "FIFA World Cup 26") soccer'
+  },
+  {
+    name: 'CBS Sports',
+    domain: 'cbssports.com',
+    accent: '#84cc16',
+    searchUrl: 'https://www.google.com/search?q=site%3Acbssports.com+World+Cup+2026',
+    feedQuery: 'site:cbssports.com ("World Cup 2026" OR "FIFA World Cup 26") soccer'
+  },
+  {
+    name: 'Goal',
+    domain: 'goal.com',
+    accent: '#f97316',
+    searchUrl: 'https://www.google.com/search?q=site%3Agoal.com+World+Cup+2026',
+    feedQuery: 'site:goal.com ("World Cup 2026" OR "FIFA World Cup 26")'
+  }
+];
 
     const WORLD_TIME_CITIES = [
       { label: 'Paris', sub: 'France', zone: 'Europe/Paris', query: 'Paris world clock time difference', color: '#7c3aed' },
@@ -947,6 +1241,109 @@
       'Miami Stadium': { name: 'Miami Stadium', search: 'Miami Stadium World Cup 2026', coord: [25.9580, -80.2389], city: 'Miami Gardens', cap: '64,767', info: 'Miami Gardens host venue and third-place site.' },
       'Kansas City Stadium': { name: 'Kansas City Stadium', search: 'Kansas City Stadium World Cup 2026', coord: [39.0489, -94.4839], city: 'Kansas City', cap: '76,000', info: 'Kansas City host venue.' }
     };
+
+    const VENUE_RESOURCE_META = {
+      "Mexico City Stadium": {
+        "airportLabel": "MEX • Benito Juárez International Airport",
+        "airportUrl": "https://www.google.com/search?q=MEX+Benito+Juarez+International+Airport",
+        "hostUrl": "https://en.wikipedia.org/wiki/Mexico_City",
+        "hotelUrl": "https://www.google.com/search?q=hotels+near+Mexico+City+Stadium"
+      },
+      "Guadalajara Stadium": {
+        "airportLabel": "GDL • Guadalajara International Airport",
+        "airportUrl": "https://www.google.com/search?q=GDL+Guadalajara+International+Airport",
+        "hostUrl": "https://en.wikipedia.org/wiki/Guadalajara",
+        "hotelUrl": "https://www.google.com/search?q=hotels+near+Guadalajara+Stadium"
+      },
+      "Toronto Stadium": {
+        "airportLabel": "YYZ • Toronto Pearson International Airport",
+        "airportUrl": "https://www.google.com/search?q=YYZ+Toronto+Pearson+International+Airport",
+        "hostUrl": "https://en.wikipedia.org/wiki/Toronto",
+        "hotelUrl": "https://www.google.com/search?q=hotels+near+Toronto+Stadium"
+      },
+      "Los Angeles Stadium": {
+        "airportLabel": "LAX • Los Angeles International Airport",
+        "airportUrl": "https://www.google.com/search?q=LAX+Los+Angeles+International+Airport",
+        "hostUrl": "https://en.wikipedia.org/wiki/Los_Angeles",
+        "hotelUrl": "https://www.google.com/search?q=hotels+near+Los+Angeles+Stadium"
+      },
+      "San Francisco Bay Area Stadium": {
+        "airportLabel": "SJC • San José Mineta International Airport",
+        "airportUrl": "https://www.google.com/search?q=SJC+San+Jose+Mineta+International+Airport",
+        "hostUrl": "https://en.wikipedia.org/wiki/Santa_Clara,_California",
+        "hotelUrl": "https://www.google.com/search?q=hotels+near+San+Francisco+Bay+Area+Stadium"
+      },
+      "New York New Jersey Stadium": {
+        "airportLabel": "EWR • Newark Liberty International Airport",
+        "airportUrl": "https://www.google.com/search?q=EWR+Newark+Liberty+International+Airport",
+        "hostUrl": "https://en.wikipedia.org/wiki/East_Rutherford,_New_Jersey",
+        "hotelUrl": "https://www.google.com/search?q=hotels+near+New+York+New+Jersey+Stadium"
+      },
+      "Boston Stadium": {
+        "airportLabel": "BOS • Logan International Airport",
+        "airportUrl": "https://www.google.com/search?q=BOS+Logan+International+Airport",
+        "hostUrl": "https://en.wikipedia.org/wiki/Foxborough,_Massachusetts",
+        "hotelUrl": "https://www.google.com/search?q=hotels+near+Boston+Stadium+Foxborough"
+      },
+      "Vancouver Stadium": {
+        "airportLabel": "YVR • Vancouver International Airport",
+        "airportUrl": "https://www.google.com/search?q=YVR+Vancouver+International+Airport",
+        "hostUrl": "https://en.wikipedia.org/wiki/Vancouver",
+        "hotelUrl": "https://www.google.com/search?q=hotels+near+Vancouver+Stadium"
+      },
+      "Houston Stadium": {
+        "airportLabel": "IAH • George Bush Intercontinental Airport",
+        "airportUrl": "https://www.google.com/search?q=IAH+George+Bush+Intercontinental+Airport",
+        "hostUrl": "https://en.wikipedia.org/wiki/Houston",
+        "hotelUrl": "https://www.google.com/search?q=hotels+near+Houston+Stadium"
+      },
+      "Dallas Stadium": {
+        "airportLabel": "DFW • Dallas/Fort Worth International Airport",
+        "airportUrl": "https://www.google.com/search?q=DFW+Dallas+Fort+Worth+International+Airport",
+        "hostUrl": "https://en.wikipedia.org/wiki/Arlington,_Texas",
+        "hotelUrl": "https://www.google.com/search?q=hotels+near+Dallas+Stadium+Arlington"
+      },
+      "Philadelphia Stadium": {
+        "airportLabel": "PHL • Philadelphia International Airport",
+        "airportUrl": "https://www.google.com/search?q=PHL+Philadelphia+International+Airport",
+        "hostUrl": "https://en.wikipedia.org/wiki/Philadelphia",
+        "hotelUrl": "https://www.google.com/search?q=hotels+near+Philadelphia+Stadium"
+      },
+      "Monterrey Stadium": {
+        "airportLabel": "MTY • Monterrey International Airport",
+        "airportUrl": "https://www.google.com/search?q=MTY+Monterrey+International+Airport",
+        "hostUrl": "https://en.wikipedia.org/wiki/Monterrey",
+        "hotelUrl": "https://www.google.com/search?q=hotels+near+Monterrey+Stadium"
+      },
+      "Atlanta Stadium": {
+        "airportLabel": "ATL • Hartsfield–Jackson Atlanta International Airport",
+        "airportUrl": "https://www.google.com/search?q=ATL+Hartsfield-Jackson+Atlanta+International+Airport",
+        "hostUrl": "https://en.wikipedia.org/wiki/Atlanta",
+        "hotelUrl": "https://www.google.com/search?q=hotels+near+Atlanta+Stadium"
+      },
+      "Seattle Stadium": {
+        "airportLabel": "SEA • Seattle–Tacoma International Airport",
+        "airportUrl": "https://www.google.com/search?q=SEA+Seattle-Tacoma+International+Airport",
+        "hostUrl": "https://en.wikipedia.org/wiki/Seattle",
+        "hotelUrl": "https://www.google.com/search?q=hotels+near+Seattle+Stadium"
+      },
+      "Miami Stadium": {
+        "airportLabel": "MIA • Miami International Airport",
+        "airportUrl": "https://www.google.com/search?q=MIA+Miami+International+Airport",
+        "hostUrl": "https://en.wikipedia.org/wiki/Miami_Gardens,_Florida",
+        "hotelUrl": "https://www.google.com/search?q=hotels+near+Miami+Stadium+Miami+Gardens"
+      },
+      "Kansas City Stadium": {
+        "airportLabel": "MCI • Kansas City International Airport",
+        "airportUrl": "https://www.google.com/search?q=MCI+Kansas+City+International+Airport",
+        "hostUrl": "https://en.wikipedia.org/wiki/Kansas_City,_Missouri",
+        "hotelUrl": "https://www.google.com/search?q=hotels+near+Kansas+City+Stadium"
+      }
+    };
+
+    Object.entries(VENUE_RESOURCE_META).forEach(([venueName, meta]) => {
+      if (VENUES[venueName]) Object.assign(VENUES[venueName], meta);
+    });
 
     const COUNTRY_COORDS = {
       'Mexico':[23.6345,-102.5528],'South Africa':[-30.5595,22.9375],'South Korea':[35.9078,127.7669],
@@ -1725,18 +2122,324 @@ Final New York New Jersey Stadium`;
       });
     }
 
-    function initTicker() {
-      const track = document.getElementById('tickerTrack');
-      [...NEWS_LINKS, ...NEWS_LINKS].forEach(item => {
-        const a = document.createElement('a');
-        a.className = 'ticker-link';
-        a.href = item.url;
-        a.target = '_blank';
-        a.rel = 'noopener noreferrer';
-        a.textContent = item.label;
-        track.appendChild(a);
-      });
+    
+const venueWeatherCache = new Map();
+let activeModalMatch = null;
+
+function renderNewsSourcePills() {
+  const root = document.getElementById('newsSources');
+  if (!root) return;
+  root.innerHTML = '';
+  LIVE_NEWS_SOURCES.forEach(source => {
+    const a = document.createElement('a');
+    a.className = 'source-pill-live';
+    a.style.setProperty('--source-accent', source.accent);
+    a.href = source.searchUrl;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.textContent = source.name;
+    root.appendChild(a);
+  });
+}
+
+function renderTickerItems(items) {
+  const track = document.getElementById('tickerTrack');
+  if (!track) return;
+  track.innerHTML = '';
+  const loopItems = [...items, ...items];
+  loopItems.forEach(item => {
+    const a = document.createElement('a');
+    a.className = 'ticker-link';
+    a.href = item.url;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.textContent = item.label;
+    track.appendChild(a);
+  });
+}
+
+function initTicker() {
+  renderTickerItems(NEWS_FALLBACK_LINKS);
+  renderNewsSourcePills();
+}
+
+function buildNewsFeedUrl(source) {
+  const query = source.feedQuery || `FIFA World Cup 2026 site:${source.domain}`;
+  return `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-US&gl=US&ceid=US:en`;
+}
+
+async function fetchFeedText(url) {
+  const proxyAttempts = [
+    async () => {
+      const res = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`Feed unavailable: ${res.status}`);
+      return await res.text();
+    },
+    async () => {
+      const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`Feed unavailable: ${res.status}`);
+      const payload = await res.json();
+      return payload?.contents || '';
+    },
+    async () => {
+      const res = await fetch(`https://r.jina.ai/http://` + url.replace(/^https?:\/\//, ''), { cache: 'no-store' });
+      if (!res.ok) throw new Error(`Feed unavailable: ${res.status}`);
+      return await res.text();
     }
+  ];
+  let lastError = null;
+  for (const attempt of proxyAttempts) {
+    try {
+      const text = await attempt();
+      if (/(<rss|<feed|<item|<entry)/i.test(text)) return text;
+      lastError = new Error('Feed response did not contain RSS/Atom items');
+    } catch (err) {
+      lastError = err;
+    }
+  }
+  throw lastError || new Error('Feed unavailable');
+}
+
+function decodeHtml(value) {
+  const textarea = document.createElement('textarea');
+  textarea.innerHTML = value;
+  return textarea.value;
+}
+
+function firstSentence(text) {
+  const normalized = decodeHtml(String(text || '')).replace(/\s+/g, ' ').trim();
+  if (!normalized) return '';
+  const match = normalized.match(/^(.{24,180}?[.!?])(?:\s|$)/);
+  return (match ? match[1] : normalized).trim();
+}
+
+function headlineFromUrl(url) {
+  try {
+    const parsed = new URL(url);
+    const pieces = parsed.pathname.split('/').filter(Boolean).slice(-2).join(' ');
+    const cleaned = decodeHtml(pieces)
+      .replace(/[-_]+/g, ' ')
+      .replace(/(ar|aa\w+|id|story)/gi, ' ')
+      .replace(/\d{4,}/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    if (!cleaned) return '';
+    return cleaned.replace(/\w/g, ch => ch.toUpperCase());
+  } catch {
+    return '';
+  }
+}
+
+function isGenericCoverageTitle(title, sourceName) {
+  const cleaned = String(title || '').toLowerCase().trim();
+  if (!cleaned) return true;
+  const genericPatterns = [
+    /^world cup 2026 coverage$/,
+    /^fifa world cup 2026 coverage$/,
+    /^world cup 2026 latest news.*$/,
+    /^latest news, scores, analysis.*$/,
+    /^open latest world cup 2026 headlines$/,
+    /^world cup 2026 update$/,
+    /^world cup 2026 today$/,
+    /^world cup 2026$/
+  ];
+  if (genericPatterns.some(pattern => pattern.test(cleaned))) return true;
+  const sourceClean = String(sourceName || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  return cleaned === sourceClean || cleaned === `${sourceClean} update`;
+}
+
+function cleanHeadlineTitle(title, sourceName) {
+  let cleaned = decodeHtml(String(title || '').trim());
+  cleaned = cleaned.replace(/\s*[\-|•·]\s*(Reuters|BBC Sport|BBC|ESPN|Sky Sports|MSN|FOX Sports|CBS Sports|Goal|FIFA)\s*$/i, '');
+  cleaned = cleaned.replace(/^(Reuters|BBC Sport|BBC|ESPN|Sky Sports|MSN|FOX Sports|CBS Sports|Goal|FIFA)\s*[\-|•·]\s*/i, '');
+  cleaned = cleaned.replace(/^World Cup 2026\s*[:\-]\s*/i, '');
+  cleaned = cleaned.replace(/^FIFA World Cup 26\s*[:\-]\s*/i, '');
+  cleaned = cleaned.replace(/^World Cup 2026 coverage\s*[:\-]?\s*/i, '');
+  cleaned = cleaned.replace(/\s+/g, ' ').trim();
+  return cleaned || `${sourceName} update`;
+}
+
+function normalizeHeadlineKey(title) {
+  return String(title || '')
+    .toLowerCase()
+    .replace(/&/g, ' and ')
+    .replace(/[^a-z0-9]+/g, ' ')
+    .replace(/(world cup|fifa|2026|cup|the|a|an|and|for|to|of|on|in|latest|news|coverage)/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function parseFeedItems(xmlText, source) {
+  const doc = new DOMParser().parseFromString(xmlText, 'text/xml');
+  const nodes = Array.from(doc.querySelectorAll('item, entry')).slice(0, 10);
+  return nodes.map(node => {
+    const rawTitle = node.querySelector('title')?.textContent?.trim() || `${source.name} update`;
+    const link = node.querySelector('link')?.textContent?.trim() || node.querySelector('link')?.getAttribute('href')?.trim() || source.searchUrl;
+    const pubDate = node.querySelector('pubDate, updated, published')?.textContent?.trim() || '';
+    const descriptionRaw = node.querySelector('description, summary, content')?.textContent || '';
+    const description = decodeHtml(descriptionRaw.replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
+
+    let title = cleanHeadlineTitle(rawTitle, source.name);
+    if (isGenericCoverageTitle(title, source.name) && description) title = cleanHeadlineTitle(firstSentence(description), source.name);
+    if (isGenericCoverageTitle(title, source.name) && link) title = cleanHeadlineTitle(headlineFromUrl(link), source.name);
+    if (isGenericCoverageTitle(title, source.name)) return null;
+
+    return {
+      source: source.name,
+      label: `${source.name} • ${title}`,
+      title,
+      url: link,
+      publishedAt: Date.parse(pubDate) || 0,
+      description,
+      dedupeKey: normalizeHeadlineKey(title),
+      host: source.domain
+    };
+  }).filter(item => item && item.title && item.url);
+}
+
+function dedupeNewsItems(items) {
+  const seenTitles = new Set();
+  const seenUrls = new Set();
+  const output = [];
+  for (const item of items.sort((a, b) => b.publishedAt - a.publishedAt)) {
+    const urlKey = String(item.url || '').split('?')[0];
+    const titleKey = item.dedupeKey || normalizeHeadlineKey(item.title);
+    if (!titleKey || seenTitles.has(titleKey) || seenUrls.has(urlKey)) continue;
+    seenTitles.add(titleKey);
+    seenUrls.add(urlKey);
+    output.push(item);
+  }
+  return output;
+}
+
+async function loadLiveNews() {
+  const status = document.getElementById('newsStatus');
+  if (status) status.textContent = 'LIVE FEEDS • Refreshing source headlines...';
+  const settled = await Promise.allSettled(LIVE_NEWS_SOURCES.map(async source => {
+    const xmlText = await fetchFeedText(buildNewsFeedUrl(source));
+    return parseFeedItems(xmlText, source).slice(0, 3);
+  }));
+  const items = settled.filter(result => result.status === 'fulfilled').flatMap(result => result.value);
+  const uniqueItems = dedupeNewsItems(items);
+  if (uniqueItems.length) {
+    renderTickerItems(uniqueItems.slice(0, 18));
+    const liveCount = new Set(uniqueItems.map(item => item.source)).size;
+    if (status) status.textContent = `LIVE FEEDS • ${liveCount}/${LIVE_NEWS_SOURCES.length} sources active • Headlines refresh automatically`;
+  } else {
+    renderTickerItems(NEWS_FALLBACK_LINKS);
+    if (status) status.textContent = 'LIVE FEEDS • Showing source headlines fallback right now';
+  }
+}
+
+function weatherCodeLabel(code) {
+  const mapping = {
+    0: 'Clear', 1: 'Mostly clear', 2: 'Partly cloudy', 3: 'Overcast', 45: 'Fog', 48: 'Fog',
+    51: 'Light drizzle', 53: 'Drizzle', 55: 'Dense drizzle', 56: 'Freezing drizzle', 57: 'Freezing drizzle',
+    61: 'Light rain', 63: 'Rain', 65: 'Heavy rain', 66: 'Freezing rain', 67: 'Freezing rain',
+    71: 'Light snow', 73: 'Snow', 75: 'Heavy snow', 77: 'Snow grains', 80: 'Rain showers',
+    81: 'Rain showers', 82: 'Heavy showers', 85: 'Snow showers', 86: 'Snow showers',
+    95: 'Thunderstorm', 96: 'Thunderstorm', 99: 'Thunderstorm'
+  };
+  return mapping[code] || 'Weather live';
+}
+
+async function fetchVenueWeather(venueName) {
+  const venue = VENUES[venueName];
+  if (!venue || !venue.coord) return null;
+  const [lat, lon] = venue.coord;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,wind_speed_10m&timezone=auto`;
+  const res = await fetch(url, { cache: 'no-store' });
+  if (!res.ok) throw new Error(`Weather unavailable: ${res.status}`);
+  const data = await res.json();
+  const current = data.current || {};
+  return {
+    temperature: current.temperature_2m,
+    wind: current.wind_speed_10m,
+    code: current.weather_code,
+    label: weatherCodeLabel(current.weather_code),
+    time: current.time
+  };
+}
+
+function venueWeatherSummary(venueName) {
+  const weather = venueWeatherCache.get(venueName);
+  if (!weather) return 'Loading weather';
+  const temp = Number.isFinite(weather.temperature) ? `${Math.round(weather.temperature)}°C` : '—';
+  const wind = Number.isFinite(weather.wind) ? `${Math.round(weather.wind)} km/h wind` : 'wind —';
+  return `${temp} • ${weather.label} • ${wind}`;
+}
+
+function buildVenueLinks(venue) {
+  if (!venue) return '';
+  const weatherQuery = `https://www.google.com/search?q=${encodeURIComponent(`${venue.city} weather`)}`;
+  const guideQuery = venue.hostUrl || `https://www.google.com/search?q=${encodeURIComponent(`${venue.city} travel guide`)}`;
+  const airportUrl = venue.airportUrl || `https://www.google.com/search?q=${encodeURIComponent(`${venue.city} airport`)}`;
+  const hotelUrl = venue.hotelUrl || `https://www.google.com/search?q=${encodeURIComponent(`hotels near ${venue.name}`)}`;
+  return `
+    <a class="resource-link primary" href="https://www.google.com/search?q=${encodeURIComponent(venue.search)}&tbm=isch" target="_blank" rel="noopener noreferrer">Stadium</a>
+    <a class="resource-link" href="${airportUrl}" target="_blank" rel="noopener noreferrer">Airport</a>
+    <a class="resource-link" href="${weatherQuery}" target="_blank" rel="noopener noreferrer">Weather</a>
+    <a class="resource-link" href="${guideQuery}" target="_blank" rel="noopener noreferrer">Host city</a>
+    <a class="resource-link" href="${hotelUrl}" target="_blank" rel="noopener noreferrer">Hotels</a>`;
+}
+
+function buildVenueDetailsHtml(venue) {
+  if (!venue) return 'Venue data unavailable';
+  const airport = venue.airportLabel || `${venue.city} airport`;
+  return `<b>City:</b> ${venue.city}<br><b>Capacity:</b> ${venue.cap}<br><b>Profile:</b> ${venue.info}<br><b>Airport:</b> ${airport}<br><b>Weather:</b> ${venueWeatherSummary(venue.name)}`;
+}
+
+function focusVenueByName(venueName) {
+  const match = ALL_MATCHES.find(item => item.venue === venueName);
+  if (match) focusMatch(match);
+}
+
+function renderVenueResources() {
+  const root = document.getElementById('venueResourceGrid');
+  if (!root) return;
+  const venues = Object.values(VENUES).sort((a, b) => a.city.localeCompare(b.city));
+  if (!venues.length) {
+    root.innerHTML = '<div class="resource-empty">Venue resources unavailable.</div>';
+    return;
+  }
+  root.innerHTML = '';
+  venues.forEach(venue => {
+    const card = document.createElement('div');
+    card.className = 'venue-resource-card';
+    card.innerHTML = `
+      <div class="venue-resource-top">
+        <div>
+          <h4>${venue.name}</h4>
+          <div class="venue-resource-sub">${venue.city} • ${venue.cap} capacity</div>
+        </div>
+        <div class="venue-weather-chip">${venueWeatherSummary(venue.name)}</div>
+      </div>
+      <div class="resource-line"><span>Airport</span><strong>${venue.airportLabel || venue.city}</strong></div>
+      <div class="resource-line"><span>Live weather</span><strong>${venueWeatherSummary(venue.name)}</strong></div>
+      <div class="resource-line"><span>Host city</span><strong>${venue.city}</strong></div>
+      <div class="resource-links">${buildVenueLinks(venue)}</div>`;
+    card.addEventListener('mouseenter', () => focusVenueByName(venue.name));
+    card.addEventListener('click', () => {
+      const match = ALL_MATCHES.find(item => item.venue === venue.name);
+      if (match) openModal(match);
+    });
+    root.appendChild(card);
+  });
+}
+
+async function loadVenueWeatherData() {
+  const status = document.getElementById('resourceStatus');
+  if (status) status.textContent = 'LIVE CONTEXT • Refreshing airport + weather resources...';
+  const venues = Object.keys(VENUES);
+  const settled = await Promise.allSettled(venues.map(async venueName => {
+    const weather = await fetchVenueWeather(venueName);
+    if (weather) venueWeatherCache.set(venueName, weather);
+  }));
+  renderVenueResources();
+  if (activeModalMatch) openModal(activeModalMatch);
+  const liveCount = settled.filter(item => item.status === 'fulfilled').length;
+  if (status) status.textContent = `LIVE CONTEXT • ${liveCount}/${venues.length} venue weather feeds active`;
+}
 
     function setClock() { document.getElementById('syncNode').textContent = `SYNC: ONLINE • ${new Date().toLocaleString()}`; }
     function upcomingMatches() { return ALL_MATCHES.slice(0, 8); }
@@ -2158,21 +2861,24 @@ Final New York New Jersey Stadium`;
     function formatInTimeZone(date, timeZone) {
       return new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone }).format(date);
     }
-    function openModal(match) {
-      const venue = VENUES[match.venue];
-      const dt = parseMatchDateTime(match);
-      document.getElementById('modalStage').textContent = match.stage === 'Group stage' ? `Group ${match.group}` : match.stage;
-      document.getElementById('modalFixture').textContent = `${match.home} vs ${match.away}`;
-      document.getElementById('modalDate').textContent = `${match.date} • ${match.time}`;
-      document.getElementById('modalVenue').textContent = match.venue;
-      document.getElementById('modalVenueDetails').innerHTML = venue ? `<b>City:</b> ${venue.city}<br><b>Capacity:</b> ${venue.cap}<br><b>Profile:</b> ${venue.info}` : 'Venue data unavailable';
-      document.getElementById('modalTimeLocal').textContent = dt ? formatInTimeZone(dt, Intl.DateTimeFormat().resolvedOptions().timeZone) : match.time;
-      document.getElementById('modalTimeCest').textContent = dt ? formatInTimeZone(dt, 'Europe/Paris') : match.time;
-      document.getElementById('modalTimeUk').textContent = dt ? formatInTimeZone(dt, 'Europe/London') : match.time;
-      document.getElementById('modalLink').href = venue ? `https://www.google.com/search?q=${encodeURIComponent(venue.search)}&tbm=isch` : '#';
-      document.getElementById('modalOverlay').style.display = 'flex';
-      focusMatch(match);
-    }
+    
+function openModal(match) {
+  const venue = VENUES[match.venue];
+  activeModalMatch = match;
+  const dt = parseMatchDateTime(match);
+  document.getElementById('modalStage').textContent = match.stage === 'Group stage' ? `Group ${match.group}` : match.stage;
+  document.getElementById('modalFixture').textContent = `${match.home} vs ${match.away}`;
+  document.getElementById('modalDate').textContent = `${match.date} • ${match.time}`;
+  document.getElementById('modalVenue').textContent = match.venue;
+  document.getElementById('modalVenueDetails').innerHTML = buildVenueDetailsHtml(venue);
+  document.getElementById('modalTimeLocal').textContent = dt ? formatInTimeZone(dt, Intl.DateTimeFormat().resolvedOptions().timeZone) : match.time;
+  document.getElementById('modalTimeCest').textContent = dt ? formatInTimeZone(dt, 'Europe/Paris') : match.time;
+  document.getElementById('modalTimeUk').textContent = dt ? formatInTimeZone(dt, 'Europe/London') : match.time;
+  document.getElementById('modalLink').href = venue ? `https://www.google.com/search?q=${encodeURIComponent(venue.search)}&tbm=isch` : '#';
+  document.getElementById('modalResourceLinks').innerHTML = venue ? buildVenueLinks(venue) : '';
+  document.getElementById('modalOverlay').style.display = 'flex';
+  focusMatch(match);
+}
     function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
     function openAboutPage() { document.getElementById('aboutPageOverlay').style.display = 'flex'; }
     function closeAboutPage() { document.getElementById('aboutPageOverlay').style.display = 'none'; }
@@ -2231,8 +2937,26 @@ Final New York New Jersey Stadium`;
     window.addEventListener('resize', () => setTimeout(() => { syncBracketShellHeight(); layoutBracket(); fitBracketToView(); }, 60));
 
     window.addEventListener('load', () => {
-      setClock(); setInterval(setClock, 1000); setInterval(updateWorldTimes, 1000);
-      initTicker(); renderWorldTimes(); renderUpcoming(); renderScheduleTable(); renderGroupTabs(); renderGroupRoutes(); syncBracketShellHeight(); layoutBracket(); fitBracketToView(); initMaps(); updateCountdowns(); setInterval(updateCountdowns, 1000);
+      registerNavvaPwa();
+      setClock();
+      setInterval(setClock, 1000);
+      setInterval(updateWorldTimes, 1000);
+      initTicker();
+      renderWorldTimes();
+      renderUpcoming();
+      renderScheduleTable();
+      renderGroupTabs();
+      renderGroupRoutes();
+      syncBracketShellHeight();
+      layoutBracket();
+      fitBracketToView();
+      initMaps();
+      updateCountdowns();
+      loadLiveNews();
+      loadVenueWeatherData();
+      setInterval(updateCountdowns, 1000);
+      setInterval(loadLiveNews, 15 * 60 * 1000);
+      setInterval(loadVenueWeatherData, 10 * 60 * 1000);
       focusMatch(ALL_MATCHES[0]);
       setTimeout(() => {
         if (geoMap) geoMap.invalidateSize();
