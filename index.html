@@ -134,7 +134,8 @@
     .date-badge small { color: var(--theme-pink); font-weight:800; font-size:.65rem; letter-spacing:.8px; }
     .date-badge strong { font-size:1.2rem; }
     .meta-line { font-size:.72rem; color: var(--theme-muted); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-weight:700; }
-    .fixture-line { font-size:.96rem; font-weight:800; margin: 4px 0 6px; }
+    .fixture-line { font-size:.96rem; font-weight:800; margin: 4px 0 4px; }
+    .local-kickoff-line { font-size:.76rem; color: var(--theme-muted); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-weight:700; }
     .countdown { display:inline-block; padding: 3px 7px; border-radius: 8px; font-size: .78rem; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--theme-green); background: rgba(0,255,136,.08); border:1px solid rgba(0,255,136,.16); }
 
     .schedule-table-wrap { max-height: 340px; overflow:auto; border:1px solid var(--theme-border); border-radius:12px; }
@@ -444,6 +445,20 @@
       stroke-linejoin:round;
       filter: drop-shadow(0 0 5px rgba(0,240,255,.30));
       opacity:1;
+    }
+
+    .map-arrow-icon {
+      width: 18px;
+      height: 18px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color: var(--theme-cyan);
+      font-size: 16px;
+      font-weight: 900;
+      text-shadow: 0 0 10px rgba(0,0,0,.35);
+      transform-origin: center center;
+      pointer-events: none;
     }
 
     @media (max-width: 1460px) {
@@ -1550,6 +1565,7 @@ Final New York New Jersey Stadium`;
         const dayNum = m.date.split(' ').pop();
         const month = m.date.split(', ')[1].split(' ')[0].slice(0,3).toUpperCase();
         const action = getScheduleActionState(m);
+        const localKickoff = formatMatchLocalDateTime(m);
         card.innerHTML = `
           <div class="date-badge"><small>${month}</small><strong>${dayNum}</strong></div>
           <div>
@@ -1558,6 +1574,7 @@ Final New York New Jersey Stadium`;
               <button type="button" id="upcoming-action-${i}" class="schedule-action-btn ${action.type === 'live' ? 'live' : action.type === 'today' ? 'today' : 'dim'}" ${action.interactive ? '' : 'disabled'} data-watch="${i}">${action.label}</button>
             </div>
             <div class="fixture-line">${m.homeFlag} ${m.home} vs ${m.away} ${m.awayFlag}</div>
+            <div class="local-kickoff-line">LOCAL • ${localKickoff}</div>
           </div>`;
         const watchBtn = card.querySelector('[data-watch]');
         if (watchBtn && action.interactive) {
@@ -1589,13 +1606,26 @@ Final New York New Jersey Stadium`;
     }
 
     function formatShortCountdown(ms) {
-      const totalMinutes = Math.max(0, Math.floor(ms / 60000));
-      const days = Math.floor(totalMinutes / 1440);
-      const hours = Math.floor((totalMinutes % 1440) / 60);
-      const minutes = totalMinutes % 60;
-      if (days > 0) return `${days}d ${hours}h`;
-      if (hours > 0) return `${hours}h ${minutes}m`;
-      return `${minutes}m`;
+      const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+      const days = Math.floor(totalSeconds / 86400);
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+      if (days > 0) return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+      if (hours > 0) return `${hours}h ${minutes}m ${seconds}s`;
+      return `${minutes}m ${seconds}s`;
+    }
+
+    function formatMatchLocalDateTime(match) {
+      const start = parseMatchDateTime(match);
+      if (!start) return `${match.date} • ${match.time}`;
+      return new Intl.DateTimeFormat(undefined, {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit'
+      }).format(start);
     }
 
     function getScheduleActionState(match) {
@@ -1928,11 +1958,62 @@ Final New York New Jersey Stadium`;
       if (stadiumMap) clearLayers(stadiumLayers, stadiumMap);
     }
 
+    function haversineKm(a, b) {
+      const toRad = (d) => d * Math.PI / 180;
+      const R = 6371;
+      const dLat = toRad(b[0] - a[0]);
+      const dLng = toRad(b[1] - a[1]);
+      const lat1 = toRad(a[0]);
+      const lat2 = toRad(b[0]);
+      const h = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+      return 2 * R * Math.asin(Math.sqrt(h));
+    }
+
+    function kmToFeet(km) {
+      return km * 3280.84;
+    }
+
+    function formatDistancePair(a, b) {
+      const km = haversineKm(a, b);
+      const feet = kmToFeet(km);
+      return `${km.toLocaleString(undefined, { maximumFractionDigits: 0 })} km • ${feet.toLocaleString(undefined, { maximumFractionDigits: 0 })} ft`;
+    }
+
+    function getMidpoint(a, b) {
+      return [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+    }
+
+    function getBearing(a, b) {
+      const toRad = (d) => d * Math.PI / 180;
+      const toDeg = (r) => r * 180 / Math.PI;
+      const lat1 = toRad(a[0]);
+      const lon1 = toRad(a[1]);
+      const lat2 = toRad(b[0]);
+      const lon2 = toRad(b[1]);
+      const y = Math.sin(lon2 - lon1) * Math.cos(lat2);
+      const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(lon2 - lon1);
+      return (toDeg(Math.atan2(y, x)) + 360) % 360;
+    }
+
     function addCountryCircle(map, coords, color, label, store) {
       if (!coords || !Number.isFinite(coords[0]) || !Number.isFinite(coords[1])) return;
       const circle = L.circle(coords, { radius: 620000, color, weight: 3, fillColor: color, fillOpacity: .18 }).addTo(map);
       circle.bindTooltip(label, { direction:'top', opacity:.96 });
       store.push(circle);
+      return circle;
+    }
+
+    function addRouteLine(map, fromCoords, toCoords, color, label, store, dashed = false) {
+      if (!fromCoords || !toCoords) return;
+      const line = L.polyline([fromCoords, toCoords], {
+        color,
+        weight: 3,
+        opacity: 0.9,
+        dashArray: dashed ? '8 8' : null
+      }).addTo(map);
+      if (label) line.bindTooltip(label, { sticky: true, opacity: 0.96 });
+      store.push(line);
+      return line;
     }
 
     function focusMatch(match) {
@@ -1940,21 +2021,46 @@ Final New York New Jersey Stadium`;
       const venue = VENUES[match.venue];
       const homeCoords = COUNTRY_COORDS[match.home];
       const awayCoords = COUNTRY_COORDS[match.away];
+      const geoBounds = [];
       if (geoMap) {
-        if (homeCoords && match.home !== 'World Cup winner') addCountryCircle(geoMap, homeCoords, cssVar('--theme-green'), match.home, geoLayers);
-        if (awayCoords && match.away !== 'World Cup runner-up') addCountryCircle(geoMap, awayCoords, cssVar('--theme-orange'), match.away, geoLayers);
+        if (homeCoords && match.home !== 'World Cup winner') {
+          addCountryCircle(geoMap, homeCoords, cssVar('--theme-green'), match.home, geoLayers);
+          geoBounds.push(homeCoords);
+        }
+        if (awayCoords && match.away !== 'World Cup runner-up') {
+          addCountryCircle(geoMap, awayCoords, cssVar('--theme-orange'), match.away, geoLayers);
+          geoBounds.push(awayCoords);
+        }
         if (venue) {
           const marker = L.circleMarker(venue.coord, { radius: 9, color:'#fff', weight:1.5, fillColor: cssVar('--theme-pink'), fillOpacity: .95 }).addTo(geoMap);
           marker.bindPopup(`<b>${venue.name}</b><br><small>${match.home} vs ${match.away}</small>`).openPopup();
           geoLayers.push(marker);
-          geoMap.setView(venue.coord, 2);
+          geoBounds.push(venue.coord);
+        }
+
+        if (homeCoords && venue) {
+          addRouteLine(geoMap, homeCoords, venue.coord, cssVar('--theme-green'), `${match.home} to ${venue.name}<br>${formatDistancePair(homeCoords, venue.coord)}`, geoLayers, false);
+        }
+        if (awayCoords && venue) {
+          addRouteLine(geoMap, awayCoords, venue.coord, cssVar('--theme-orange'), `${match.away} to ${venue.name}<br>${formatDistancePair(awayCoords, venue.coord)}`, geoLayers, false);
+        }
+
+        if (geoBounds.length) {
+          geoMap.fitBounds(L.latLngBounds(geoBounds), { padding: [36, 36], maxZoom: 3 });
+        } else {
+          geoMap.fitWorld({ padding: [20, 20] });
         }
       }
       if (stadiumMap && venue) {
         const marker = L.circleMarker(venue.coord, { radius: 10, color:'#fff', weight:1.6, fillColor: cssVar('--theme-cyan'), fillOpacity: .95 }).addTo(stadiumMap);
         marker.bindPopup(`<b>${venue.name}</b><br><small>${match.date} • ${match.time}</small>`).openPopup();
         stadiumLayers.push(marker);
-        stadiumMap.setView(venue.coord, 4);
+        if (homeCoords) addRouteLine(stadiumMap, homeCoords, venue.coord, cssVar('--theme-green'), `${match.home} to ${venue.name}<br>${formatDistancePair(homeCoords, venue.coord)}`, stadiumLayers, false);
+        if (awayCoords) addRouteLine(stadiumMap, awayCoords, venue.coord, cssVar('--theme-orange'), `${match.away} to ${venue.name}<br>${formatDistancePair(awayCoords, venue.coord)}`, stadiumLayers, false);
+        const stadiumBounds = [venue.coord];
+        if (homeCoords) stadiumBounds.push(homeCoords);
+        if (awayCoords) stadiumBounds.push(awayCoords);
+        stadiumMap.fitBounds(L.latLngBounds(stadiumBounds), { padding: [32, 32], maxZoom: 4 });
       }
     }
 
@@ -2002,8 +2108,8 @@ Final New York New Jersey Stadium`;
     }
 
     function initMaps() {
-      geoMap = L.map('geoMap', { zoomControl:true, attributionControl:false }).setView([18, 8], 1.3);
-      stadiumMap = L.map('stadiumMap', { zoomControl:true, attributionControl:false }).setView([35, -95], 2);
+      geoMap = L.map('geoMap', { zoomControl:true, attributionControl:false, worldCopyJump:true }).fitWorld({ padding: [18, 18] });
+      stadiumMap = L.map('stadiumMap', { zoomControl:true, attributionControl:false, worldCopyJump:true }).fitWorld({ padding: [18, 18] });
       L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(geoMap);
       L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(stadiumMap);
       applyTheme(document.documentElement.dataset.theme || 'dark');
@@ -2033,8 +2139,9 @@ Final New York New Jersey Stadium`;
       layoutBracket();
       initMaps();
       updateCountdowns();
+      setInterval(updateCountdowns, 1000);
       focusMatch(ALL_MATCHES[0]);
-      setTimeout(() => { geoMap.invalidateSize(); stadiumMap.invalidateSize(); layoutBracket(); }, 600);
+      setTimeout(() => { geoMap.invalidateSize(); stadiumMap.invalidateSize(); layoutBracket(); if (geoMap) geoMap.fitWorld({ padding: [18, 18] }); if (stadiumMap) stadiumMap.fitWorld({ padding: [18, 18] }); }, 600);
     });
 
     window.GleanBridge?.postMessage({ actionId: 'export-pdf', type: 'glean-add-menu', metadata: { label: 'Export as PDF', icon: 'export' } });
