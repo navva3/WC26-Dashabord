@@ -211,9 +211,53 @@
       box-shadow: inset 8px 0 0 color-mix(in srgb, var(--theme-cyan) 84%, transparent);
       cursor: default;
     }
+    .schedule-action-btn.finished {
+      border-color: color-mix(in srgb, var(--theme-text-secondary) 55%, var(--theme-border));
+      background: linear-gradient(90deg, color-mix(in srgb, var(--theme-background-mid) 88%, var(--theme-card)) 0%, color-mix(in srgb, var(--theme-background-light) 72%, var(--theme-card)) 100%);
+      color: var(--theme-text-primary);
+      box-shadow: inset 8px 0 0 color-mix(in srgb, var(--theme-text-secondary) 52%, transparent);
+    }
+    .schedule-action-btn.finished:hover {
+      transform: translateY(-1px);
+      box-shadow: inset 8px 0 0 color-mix(in srgb, var(--theme-text-secondary) 52%, transparent), 0 6px 18px color-mix(in srgb, var(--theme-background-mid) 28%, transparent);
+    }
     @keyframes livePulse {
       0%, 100% { box-shadow: inset 8px 0 0 color-mix(in srgb, var(--theme-green) 90%, transparent), 0 0 0 rgba(0,255,136,0); }
       50% { box-shadow: inset 8px 0 0 color-mix(in srgb, var(--theme-green) 90%, transparent), 0 0 14px rgba(0,255,136,.18); }
+    }
+
+    .status-stack { display:flex; flex-direction:column; gap:6px; align-items:flex-end; }
+    .status-subline {
+      font-size:.68rem;
+      color: var(--theme-muted);
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-weight:800;
+      text-align:right;
+      line-height:1.15;
+    }
+    .status-subline.live { color: var(--theme-green); }
+    .status-subline.finished { color: var(--theme-orange); }
+    .status-subline.today { color: var(--theme-orange); }
+    .status-static {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width: 144px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--theme-border);
+      background: rgba(127,147,170,.08);
+      color: var(--theme-text);
+      font-size: .74rem;
+      font-weight: 900;
+      letter-spacing: .3px;
+      white-space: nowrap;
+    }
+    .status-static.finished {
+      border-color: color-mix(in srgb, var(--theme-orange) 60%, var(--theme-border));
+      background: linear-gradient(90deg, color-mix(in srgb, var(--theme-orange) 16%, var(--theme-card)) 0%, color-mix(in srgb, var(--theme-orange) 8%, var(--theme-card)) 100%);
+      color: var(--theme-orange);
+      box-shadow: inset 8px 0 0 color-mix(in srgb, var(--theme-orange) 88%, transparent);
     }
 
     .stage-badge {
@@ -1223,6 +1267,8 @@ const LIVE_NEWS_SOURCES = [
       { label: 'Bogotá', sub: 'Colombia', zone: 'America/Bogota', query: 'Bogota Colombia world clock time difference', color: '#dc2626' }
     ];
 
+    const WC_RESULTS_URL = 'https://www.google.com/search?sa=X&sca_esv=a0947f9821f2bd45&sxsrf=ANbL-n5GCfPv42SC83OfpcsXPA6FYjxKmQ:1781257456371&q=FIFA+World+Cup+2026&oi=ddle&noiga=1&ct=460194440&hl=en-GB&stick=H4sIAAAAAAAC_-NgVuLQz9U3MDYoNJ_AwriIVdjN081RITy_KCdFwbm0QMHIwMgMAKor_7IlAAAA&ved=0ahUKEwjn9cCPtYGVAxUqUaQEHbehAOwQPQgN&biw=1875&bih=1190&dpr=1#sie=lg;/m/0r4xs1m;2;/m/030q7;bs;hd;;;;2026-06-12T02:00:00Z;-1';
+
     const VENUES = {
       'Mexico City Stadium': { name: 'Mexico City Stadium', search: 'Mexico City Stadium World Cup 2026', coord: [19.3030, -99.1505], city: 'Mexico City', cap: '87,523', info: 'Opening-match venue in Mexico City.' },
       'Guadalajara Stadium': { name: 'Guadalajara Stadium', search: 'Guadalajara Stadium World Cup 2026', coord: [20.6821, -103.4626], city: 'Guadalajara', cap: '48,071', info: 'Guadalajara host venue in Jalisco.' },
@@ -1879,6 +1925,7 @@ Final New York New Jersey Stadium`;
     }
     const KNOCKOUT_BY_ID = attachPaths(KNOCKOUT_MATCHES);
 
+    
     const GROUPS = {};
     GROUP_MATCHES.forEach(m => {
       if (!GROUPS[m.group]) GROUPS[m.group] = { teams: new Map(), fixtures: [] };
@@ -1886,6 +1933,478 @@ Final New York New Jersey Stadium`;
       GROUPS[m.group].teams.set(m.away, m.awayFlag);
       GROUPS[m.group].fixtures.push(m);
     });
+
+    const LIVE_TOURNAMENT_API = 'https://worldcup26.ir/get';
+    const ESPN_SCOREBOARD_BASE = 'https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard';
+    const ESPN_STANDINGS_ENDPOINTS = [
+      'https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/standings',
+      'https://site.api.espn.com/apis/v2/sports/soccer/leagues/fifa.world/standings'
+    ];
+    const TEAM_NAME_ALIASES = {
+      'czech republic': 'Czechia',
+      'czechia': 'Czechia',
+      'turkiye': 'Turkiye',
+      'turkiye ': 'Turkiye',
+      'curacao': 'Curacao',
+      'curacao ': 'Curacao',
+      'bosnia and herzegovina': 'Bosnia & Herzegovina',
+      'bosnia & herzegovina': 'Bosnia & Herzegovina',
+      'england': 'England',
+      'scotland': 'Scotland',
+      'dr congo': 'DR Congo',
+      'democratic republic of congo': 'DR Congo',
+      'usa': 'USA',
+      'united states': 'USA',
+      'korea republic': 'South Korea',
+      'south korea': 'South Korea',
+      'republic of korea': 'South Korea',
+      'ivory coast': 'Ivory Coast',
+      'cote d ivoire': 'Ivory Coast',
+      'cote divoire': 'Ivory Coast',
+      'cape verde islands': 'Cape Verde'
+    };
+    let liveTournamentMatches = [];
+    let liveGroupTables = null;
+    let lastTournamentSyncAt = null;
+
+    function normalizeKey(value) {
+      return String(value || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
+    }
+    function canonicalTeamName(value) {
+      const raw = String(value || '').trim();
+      if (!raw) return raw;
+      const norm = normalizeKey(raw);
+      return TEAM_NAME_ALIASES[norm] || raw;
+    }
+    function compareTeamNames(a, b) {
+      return normalizeKey(canonicalTeamName(a)) === normalizeKey(canonicalTeamName(b));
+    }
+    function statsArrayToObject(statsValue) {
+      if (!Array.isArray(statsValue)) return statsValue || {};
+      return statsValue.reduce((acc, item) => {
+        const key = String(item?.name || item?.abbreviation || item?.key || '').trim();
+        if (!key) return acc;
+        acc[key] = item?.value ?? item?.displayValue ?? item?.display ?? item?.stat ?? item?.amount ?? null;
+        return acc;
+      }, {});
+    }
+    function parseApiMatchTeamName(obj, side) {
+      const direct = side === 'home'
+        ? [obj?.home_team?.name, obj?.homeTeam?.name, obj?.team1, obj?.home_name, obj?.home]
+        : [obj?.away_team?.name, obj?.awayTeam?.name, obj?.team2, obj?.away_name, obj?.away];
+      for (const value of direct) if (value) return canonicalTeamName(value);
+      const source = side === 'home' ? (obj?.home_team_source || obj?.home_source) : (obj?.away_team_source || obj?.away_source);
+      if (source?.placeholder) return source.placeholder;
+      if (typeof source === 'string') return source;
+      return '';
+    }
+    function parseApiMatchStatus(obj) {
+      const raw = String(obj?.status || obj?.state || obj?.match_status || obj?.fixture_status || obj?.status?.type?.description || obj?.status?.type?.name || '').toLowerCase();
+      const completed = Boolean(obj?.status?.type?.completed);
+      const clock = obj?.clock_display || obj?.minute || obj?.time_elapsed || obj?.elapsed || obj?.timer || obj?.status?.displayClock || obj?.status?.detail || null;
+      const finishedStates = ['completed','finished','full time','ft','after extra time','aet','penalties','penalty','post'];
+      const liveStates = ['live','in progress','1h','2h','ht','half-time','first half','second half','extra time','in'];
+      if (completed || finishedStates.some(v => raw.includes(v))) return { type: 'finished', clock: null };
+      if (liveStates.some(v => raw.includes(v))) return { type: 'live', clock };
+      return { type: 'scheduled', clock: null };
+    }
+    function parseApiScore(obj, side) {
+      const idx = side === 'home' ? 0 : 1;
+      const nestedPairs = [
+        obj?.score?.ft,
+        obj?.score?.current,
+        obj?.score?.full_time,
+        obj?.score?.fullTime,
+        obj?.score?.result,
+        obj?.result,
+        obj?.scores,
+        obj?.goals,
+        obj?.full_time_score,
+        obj?.fullTimeScore,
+        obj?.current_score,
+        obj?.currentScore
+      ];
+      const scalarCandidates = side === 'home'
+        ? [obj?.home_score, obj?.homeScore, obj?.home_goals, obj?.homeGoals, obj?.home_result, obj?.homeResult, obj?.scores?.home, obj?.score?.home, obj?.goals?.home, obj?.result?.home]
+        : [obj?.away_score, obj?.awayScore, obj?.away_goals, obj?.awayGoals, obj?.away_result, obj?.awayResult, obj?.scores?.away, obj?.score?.away, obj?.goals?.away, obj?.result?.away];
+      for (const value of scalarCandidates) {
+        if (value === 0 || value === '0') return 0;
+        if (value != null && value !== '' && !Number.isNaN(Number(value))) return Number(value);
+      }
+      for (const pair of nestedPairs) {
+        if (Array.isArray(pair) && pair.length > idx) {
+          const value = pair[idx];
+          if (value === 0 || value === '0') return 0;
+          if (value != null && value !== '' && !Number.isNaN(Number(value))) return Number(value);
+        }
+        if (pair && typeof pair === 'object') {
+          const value = idx === 0 ? (pair.home ?? pair.h ?? pair.team1 ?? pair.first) : (pair.away ?? pair.a ?? pair.team2 ?? pair.second);
+          if (value === 0 || value === '0') return 0;
+          if (value != null && value !== '' && !Number.isNaN(Number(value))) return Number(value);
+        }
+      }
+      const scoreStringCandidates = [obj?.scoreline, obj?.scoreLine, obj?.score_text, obj?.scoreText, obj?.result_text, obj?.resultText, obj?.status?.type?.detail, obj?.status?.shortDetail];
+      for (const value of scoreStringCandidates) {
+        const match = String(value || '').match(/(\d+)\s*[-:]\s*(\d+)/);
+        if (match) return Number(match[idx + 1]);
+      }
+      return null;
+    }
+    function parseEspnCompetition(event) {
+      return event?.competitions?.[0] || event?.competition || event || {};
+    }
+    function parseEspnTeamName(event, side) {
+      const competition = parseEspnCompetition(event);
+      const competitors = Array.isArray(competition?.competitors) ? competition.competitors : [];
+      const target = competitors.find(item => String(item?.homeAway || '').toLowerCase() === side) || competitors[side === 'home' ? 0 : 1] || {};
+      return canonicalTeamName(target?.team?.displayName || target?.team?.shortDisplayName || target?.team?.name || target?.displayName || target?.name || '');
+    }
+    function parseEspnScore(event, side) {
+      const competition = parseEspnCompetition(event);
+      const competitors = Array.isArray(competition?.competitors) ? competition.competitors : [];
+      const target = competitors.find(item => String(item?.homeAway || '').toLowerCase() === side) || competitors[side === 'home' ? 0 : 1] || {};
+      const value = target?.score ?? target?.result ?? target?.linescores?.[0]?.value;
+      if (value === 0 || value === '0') return 0;
+      if (value != null && value !== '' && !Number.isNaN(Number(value))) return Number(value);
+      const detail = event?.status?.type?.detail || event?.status?.type?.shortDetail || event?.status?.shortDetail || competition?.status?.type?.detail;
+      const match = String(detail || '').match(/(\d+)\s*[-:]\s*(\d+)/);
+      if (match) return Number(match[side === 'home' ? 1 : 2]);
+      return null;
+    }
+    function parseEspnStatus(event) {
+      const raw = String(event?.status?.type?.description || event?.status?.type?.name || event?.status?.type?.state || '').toLowerCase();
+      const completed = Boolean(event?.status?.type?.completed);
+      const clock = event?.status?.displayClock || event?.status?.type?.detail || event?.status?.type?.shortDetail || null;
+      if (completed || ['post','final','full time','completed'].some(v => raw.includes(v))) return { type: 'finished', clock: null };
+      if (['in','live','halftime'].some(v => raw.includes(v))) return { type: 'live', clock };
+      return { type: 'scheduled', clock: null };
+    }
+    function inferMatchStageLabel(match) {
+      return match.stage === 'Group stage' ? `Group ${match.group}` : match.stage;
+    }
+    function orientLiveMatch(item, reverse = false) {
+      if (!reverse) return item;
+      return {
+        ...item,
+        home: item.away,
+        away: item.home,
+        home_score: item.away_score,
+        away_score: item.home_score
+      };
+    }
+    function getLiveMatch(match) {
+      const home = canonicalTeamName(match.home);
+      const away = canonicalTeamName(match.away);
+      const stageLabel = inferMatchStageLabel(match).toLowerCase();
+      const start = parseMatchDateTime(match);
+      let best = null;
+      let bestScore = -1;
+      liveTournamentMatches.forEach(item => {
+        const direct = compareTeamNames(item.home, home) && compareTeamNames(item.away, away);
+        const reverse = compareTeamNames(item.home, away) && compareTeamNames(item.away, home);
+        if (!(direct || reverse)) return;
+        let score = 0;
+        if (item.stage && stageLabel && stageLabel.includes(String(item.stage).toLowerCase().replace('stage', '').trim())) score += 25;
+        if (start && item.datetime) {
+          const itemDate = new Date(item.datetime);
+          if (!Number.isNaN(itemDate.getTime())) score += Math.max(0, 180 - Math.abs(itemDate.getTime() - start.getTime()) / 60000);
+        }
+        if (item.status_type === 'live') score += 20;
+        if (item.status_type === 'finished') score += 12;
+        if (hasResolvedScore(item)) score += 8;
+        if (score > bestScore) {
+          best = orientLiveMatch(item, reverse);
+          bestScore = score;
+        }
+      });
+      return best;
+    }
+    function formatLiveClock(value) {
+      if (value == null || value === '') return 'LIVE';
+      const raw = String(value).trim();
+      if (/^\d+$/.test(raw)) return `${raw.replace(/\D+/g, '')}'`;
+      return raw.toUpperCase();
+    }
+    function hasResolvedScore(live) {
+      return !!live && live.home_score != null && live.away_score != null && !Number.isNaN(Number(live.home_score)) && !Number.isNaN(Number(live.away_score));
+    }
+    function resolvedScoreText(live) {
+      if (!hasResolvedScore(live)) return '';
+      return `${Number(live.home_score)} - ${Number(live.away_score)}`;
+    }
+    function resolvedLiveState(match, live, start = parseMatchDateTime(match), now = new Date()) {
+      if (!live) return 'scheduled';
+      if (live.status_type === 'finished') return 'finished';
+      if (live.status_type === 'live') return 'live';
+      if (hasResolvedScore(live) && start) {
+        const end = new Date(start.getTime() + 2 * 60 * 60 * 1000);
+        if (now > end) return 'finished';
+        if (now >= start) return 'live';
+      }
+      return live.status_type || 'scheduled';
+    }
+    function scheduledStatusFromStart(match, start, now = new Date()) {
+      if (!start) return { type: 'scheduled', interactive: false, buttonLabel: `SCHEDULED • ${match.time}`, detail: '', scoreText: '', showButton: true };
+      const isToday = now.getFullYear() === start.getFullYear() && now.getMonth() === start.getMonth() && now.getDate() === start.getDate();
+      const end = new Date(start.getTime() + 2 * 60 * 60 * 1000);
+      if (now > end) return { type: 'finished', interactive: false, buttonLabel: '', detail: 'FINAL SCORE SYNCING…', scoreText: '', showButton: false };
+      if (isToday && now < start) return { type: 'today', interactive: true, buttonLabel: `TODAY • ${formatShortCountdown(start - now)}`, detail: '', scoreText: '', showButton: true };
+      return { type: 'scheduled', interactive: false, buttonLabel: `SCHEDULED • ${match.time}`, detail: '', scoreText: '', showButton: true };
+    }
+    function getMatchStatusMeta(match) {
+      const live = getLiveMatch(match);
+      const start = parseMatchDateTime(match);
+      const now = new Date();
+      const scoreText = resolvedScoreText(live);
+      const state = resolvedLiveState(match, live, start, now);
+      if (state === 'finished') {
+        return {
+          type: 'finished',
+          interactive: true,
+          buttonLabel: scoreText ? `Finished | RESULT • FT ${scoreText}` : 'Finished | RESULT • score syncing…',
+          detail: '',
+          scoreText,
+          showButton: true
+        };
+      }
+      if (state === 'live') {
+        return {
+          type: 'live',
+          interactive: true,
+          buttonLabel: 'LIVE NOW',
+          detail: `${formatLiveClock(live?.clock)}${scoreText ? ` • ${scoreText}` : ''}`,
+          scoreText,
+          showButton: true
+        };
+      }
+      return scheduledStatusFromStart(match, start, now);
+    }
+    function formatFixtureDisplay(match, statusMeta) {
+      const base = `${match.homeFlag} ${match.home} vs ${match.away} ${match.awayFlag}`;
+      if (!statusMeta || !statusMeta.scoreText || !['live','finished'].includes(statusMeta.type)) return base;
+      return `${match.homeFlag} ${match.home} ${statusMeta.scoreText} ${match.away} ${match.awayFlag}`;
+    }
+    function renderStatusStack(action) {
+      const includeButton = action.showButton !== false;
+      const allowAction = action.interactive && includeButton;
+      const typeClass = action.type === 'live' ? 'live' : action.type === 'today' ? 'today' : action.type === 'finished' ? 'finished' : 'dim';
+      const buttonHtml = includeButton ? `<button type="button" class="schedule-action-btn ${typeClass}" ${allowAction ? '' : 'disabled'}>${action.buttonLabel}</button>` : '';
+      const detailHtml = action.detail ? `<div class="status-subline ${typeClass}">${action.detail}</div>` : '';
+      return { html: `<div class="status-stack">${buttonHtml}${detailHtml}</div>`, interactive: allowAction };
+    }
+    function buildStandingsFromMatches() {
+      const tables = {};
+      Object.keys(GROUPS).forEach(letter => {
+        const group = GROUPS[letter];
+        const rows = {};
+        Array.from(group.teams.entries()).forEach(([team, flag]) => {
+          rows[canonicalTeamName(team)] = { team: canonicalTeamName(team), flag, played: 0, win: 0, draw: 0, lose: 0, gf: 0, ga: 0, gd: 0, pts: 0 };
+        });
+        let provisional = false;
+        group.fixtures.forEach(match => {
+          const live = getLiveMatch(match);
+          const state = resolvedLiveState(match, live);
+          if (!live || !hasResolvedScore(live) || !['live','finished'].includes(state)) return;
+          const hs = Number(live.home_score);
+          const as = Number(live.away_score);
+          if (Number.isNaN(hs) || Number.isNaN(as)) return;
+          const home = canonicalTeamName(match.home);
+          const away = canonicalTeamName(match.away);
+          if (!rows[home] || !rows[away]) return;
+          const homeRow = rows[home];
+          const awayRow = rows[away];
+          homeRow.played += 1; awayRow.played += 1;
+          homeRow.gf += hs; homeRow.ga += as; homeRow.gd = homeRow.gf - homeRow.ga;
+          awayRow.gf += as; awayRow.ga += hs; awayRow.gd = awayRow.gf - awayRow.ga;
+          if (hs > as) { homeRow.win += 1; awayRow.lose += 1; homeRow.pts += 3; }
+          else if (as > hs) { awayRow.win += 1; homeRow.lose += 1; awayRow.pts += 3; }
+          else { homeRow.draw += 1; awayRow.draw += 1; homeRow.pts += 1; awayRow.pts += 1; }
+          if (state === 'live') provisional = true;
+        });
+        tables[letter] = {
+          rows: Object.values(rows).sort((a,b) => b.pts - a.pts || b.gd - a.gd || b.gf - a.gf || a.team.localeCompare(b.team)).map((row, idx) => ({ ...row, rank: idx + 1 })),
+          provisional
+        };
+      });
+      return tables;
+    }
+    function standingsMetaText(letter) {
+      const table = liveGroupTables && liveGroupTables[letter];
+      const base = `${GROUPS[letter].teams.size} teams • ${GROUPS[letter].fixtures.length} fixtures`;
+      if (!table) return base;
+      const completed = table.rows.reduce((sum, row) => sum + row.played, 0) / 2;
+      return `${base} • ${table.provisional ? 'LIVE / PROVISIONAL' : 'LIVE SYNCED'} • ${completed} results tracked`;
+    }
+    function parseGroupPayloadRows(rows, fallbackLetter) {
+      if (!Array.isArray(rows)) return [];
+      return rows.map((row, idx) => {
+        const stats = statsArrayToObject(row?.stats || row?.statistics || row?.record || row?.totals || row?.summary || []);
+        const teamObj = row?.team || row?.participant || row?.country_data || row?.club || {};
+        const teamName = canonicalTeamName(teamObj?.displayName || teamObj?.shortDisplayName || teamObj?.name || row?.team_name || row?.teamName || row?.name || row?.team || row?.country || row?.nation || '');
+        if (!teamName) return null;
+        const flag = row?.flag || teamObj?.flag || GROUPS[fallbackLetter]?.teams.get(teamName) || '';
+        const played = Number(row?.played ?? row?.mp ?? row?.matches_played ?? row?.matches ?? stats?.gamesPlayed ?? stats?.matchesPlayed ?? stats?.played ?? stats?.mp ?? stats?.matches ?? 0) || 0;
+        const win = Number(row?.win ?? row?.wins ?? row?.w ?? stats?.wins ?? stats?.win ?? stats?.w ?? 0) || 0;
+        const draw = Number(row?.draw ?? row?.draws ?? row?.ties ?? row?.d ?? stats?.draw ?? stats?.draws ?? stats?.ties ?? stats?.d ?? 0) || 0;
+        const lose = Number(row?.lose ?? row?.losses ?? row?.l ?? row?.lost ?? stats?.losses ?? stats?.lose ?? stats?.lost ?? stats?.l ?? 0) || 0;
+        const gf = Number(row?.gf ?? row?.goals_for ?? row?.goalsFor ?? row?.scored ?? stats?.goalsFor ?? stats?.gf ?? stats?.goals_for ?? stats?.scored ?? 0) || 0;
+        const ga = Number(row?.ga ?? row?.goals_against ?? row?.goalsAgainst ?? row?.conceded ?? stats?.goalsAgainst ?? stats?.ga ?? stats?.goals_against ?? stats?.conceded ?? 0) || 0;
+        const gdRaw = row?.gd ?? row?.goal_difference ?? row?.goalDifference ?? stats?.goalDifference ?? stats?.gd ?? stats?.goal_difference;
+        const gd = Number(gdRaw ?? (gf - ga)) || 0;
+        const pts = Number(row?.pts ?? row?.points ?? row?.p ?? stats?.points ?? stats?.pts ?? stats?.p ?? 0) || 0;
+        return {
+          team: teamName,
+          flag,
+          played,
+          win,
+          draw,
+          lose,
+          gf,
+          ga,
+          gd,
+          pts,
+          rank: Number(row?.rank ?? row?.position ?? row?.pos ?? stats?.rank ?? stats?.position ?? idx + 1) || idx + 1
+        };
+      }).filter(Boolean).sort((a,b) => (a.rank || 99) - (b.rank || 99) || b.pts - a.pts || b.gd - a.gd || b.gf - a.gf || a.team.localeCompare(b.team));
+    }
+    function parseLiveGroupTables(groupsPayload) {
+      const pool = [];
+      const pushCandidate = (entry, rawRows, rawName) => {
+        const rows = rawRows || entry?.teams || entry?.table || entry?.standings || entry?.rows || entry?.data || entry?.entries || entry?.items || [];
+        const name = String(rawName || entry?.group?.name || entry?.group_name || entry?.name || entry?.label || entry?.displayName || entry?.abbreviation || entry?.group || '').trim();
+        if (Array.isArray(rows) && rows.length) pool.push({ name, rows });
+      };
+      const visit = (node, inheritedName = '') => {
+        if (!node) return;
+        if (Array.isArray(node)) {
+          node.forEach(item => visit(item, inheritedName));
+          return;
+        }
+        if (typeof node !== 'object') return;
+        pushCandidate(node, node?.teams || node?.table || node?.standings || node?.rows || node?.data || node?.entries || node?.items, inheritedName);
+        if (Array.isArray(node?.children)) {
+          node.children.forEach(child => {
+            const childName = child?.name || child?.displayName || child?.abbreviation || inheritedName;
+            if (child?.standings?.entries) pushCandidate(child, child.standings.entries, childName);
+            visit(child, childName);
+          });
+        }
+        if (node?.standings?.entries) pushCandidate(node, node.standings.entries, inheritedName || node?.name || node?.displayName);
+        Object.values(node).forEach(value => {
+          if (value && typeof value === 'object') visit(value, inheritedName);
+        });
+      };
+      visit(groupsPayload);
+      const tables = {};
+      pool.forEach((entry, idx) => {
+        const rawName = String(entry?.name || '').trim();
+        const match = rawName.match(/group\s*([A-L])/i) || rawName.match(/^([A-L])$/i);
+        const letter = (match ? match[1] : String.fromCharCode(65 + idx)).toUpperCase();
+        if (!GROUPS[letter]) return;
+        const rows = parseGroupPayloadRows(entry.rows, letter);
+        if (rows.length) tables[letter] = { rows, provisional: false };
+      });
+      return Object.keys(tables).length ? tables : null;
+    }
+    function tableTrackedResultsCount(table) {
+      if (!table?.rows) return 0;
+      return table.rows.reduce((sum, row) => sum + (Number(row.played) || 0), 0) / 2;
+    }
+    function chooseGroupTables(officialTables, derivedTables) {
+      const merged = {};
+      Object.keys(GROUPS).forEach(letter => {
+        const official = officialTables?.[letter] || null;
+        const derived = derivedTables?.[letter] || null;
+        const officialTracked = tableTrackedResultsCount(official);
+        const derivedTracked = tableTrackedResultsCount(derived);
+        if (official && (officialTracked > 0 || derivedTracked === 0)) merged[letter] = official;
+        else if (derived) merged[letter] = derived;
+      });
+      return merged;
+    }
+    function scheduleDateKey(dateObj) {
+      const y = dateObj.getFullYear();
+      const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const d = String(dateObj.getDate()).padStart(2, '0');
+      return `${y}${m}${d}`;
+    }
+    function relevantScoreboardDates() {
+      const now = new Date();
+      const dates = new Set();
+      for (let offset = -2; offset <= 2; offset += 1) {
+        const d = new Date(now);
+        d.setDate(now.getDate() + offset);
+        dates.add(scheduleDateKey(d));
+      }
+      return Array.from(dates).sort();
+    }
+    function flattenEspnEvents(payload) {
+      if (!payload) return [];
+      if (Array.isArray(payload?.events)) return payload.events;
+      if (Array.isArray(payload)) return payload;
+      return [];
+    }
+    async function safeJson(url) {
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`${res.status}`);
+      return res.json();
+    }
+    async function loadLiveTournamentData() {
+      const scoreboardUrls = relevantScoreboardDates().map(dateKey => `${ESPN_SCOREBOARD_BASE}?dates=${dateKey}`);
+      const settled = await Promise.allSettled([
+        safeJson(`${LIVE_TOURNAMENT_API}/games`),
+        safeJson(`${LIVE_TOURNAMENT_API}/groups`),
+        ...scoreboardUrls.map(url => safeJson(url)),
+        ...ESPN_STANDINGS_ENDPOINTS.map(url => safeJson(url))
+      ]);
+      const gamesPayload = settled[0].status === 'fulfilled' ? settled[0].value : null;
+      const groupsPayload = settled[1].status === 'fulfilled' ? settled[1].value : null;
+      const espnScorePayloads = settled.slice(2, 2 + scoreboardUrls.length).filter(item => item.status === 'fulfilled').map(item => item.value);
+      const espnStandingsPayloads = settled.slice(2 + scoreboardUrls.length).filter(item => item.status === 'fulfilled').map(item => item.value);
+
+      const rawGames = Array.isArray(gamesPayload) ? gamesPayload : Array.isArray(gamesPayload?.data) ? gamesPayload.data : Array.isArray(gamesPayload?.matches) ? gamesPayload.matches : Array.isArray(gamesPayload?.games) ? gamesPayload.games : [];
+      const legacyMatches = rawGames.map(item => {
+        const statusInfo = parseApiMatchStatus(item);
+        return {
+          home: parseApiMatchTeamName(item, 'home'),
+          away: parseApiMatchTeamName(item, 'away'),
+          home_score: parseApiScore(item, 'home'),
+          away_score: parseApiScore(item, 'away'),
+          status_type: statusInfo.type,
+          clock: statusInfo.clock,
+          stage: item?.stage?.name || item?.round_name || item?.round || item?.group?.name || item?.group || '',
+          datetime: item?.datetime || item?.date || item?.match_date || null,
+          source: 'legacy'
+        };
+      }).filter(item => item.home || item.away);
+
+      const espnMatches = espnScorePayloads.flatMap(payload => flattenEspnEvents(payload).map(event => {
+        const statusInfo = parseEspnStatus(event);
+        return {
+          home: parseEspnTeamName(event, 'home'),
+          away: parseEspnTeamName(event, 'away'),
+          home_score: parseEspnScore(event, 'home'),
+          away_score: parseEspnScore(event, 'away'),
+          status_type: statusInfo.type,
+          clock: statusInfo.clock,
+          stage: event?.season?.slug || event?.week?.text || event?.status?.type?.detail || '',
+          datetime: event?.date || null,
+          source: 'espn'
+        };
+      })).filter(item => item.home || item.away);
+
+      liveTournamentMatches = [...espnMatches, ...legacyMatches];
+
+      const parsedGroups = [groupsPayload, ...espnStandingsPayloads].map(parseLiveGroupTables).find(tables => tables && Object.keys(tables).length) || null;
+      const derivedTables = buildStandingsFromMatches();
+      liveGroupTables = chooseGroupTables(parsedGroups, derivedTables);
+      lastTournamentSyncAt = new Date();
+      renderUpcoming();
+      renderScheduleTable();
+      renderGroup(activeGroup || 'A');
+      renderGroupRoutes();
+    }
+
 
     let activeGroup = 'A';
     let bracketZoom = 1;
@@ -2159,7 +2678,7 @@ function renderTickerItems(items) {
 }
 
 function initTicker() {
-  renderTickerItems(NEWS_FALLBACK_LINKS);
+  renderTickerItems(NEWS_FALLBACK_LINKS.map(item => ({ ...item, label: `${item.source} • ${item.title}` })));
   renderNewsSourcePills();
 }
 
@@ -2219,12 +2738,12 @@ function headlineFromUrl(url) {
     const pieces = parsed.pathname.split('/').filter(Boolean).slice(-2).join(' ');
     const cleaned = decodeHtml(pieces)
       .replace(/[-_]+/g, ' ')
-      .replace(/(ar|aa\w+|id|story)/gi, ' ')
+      .replace(/\b(ar|aa\w+|id|story)\b/gi, ' ')
       .replace(/\d{4,}/g, ' ')
       .replace(/\s+/g, ' ')
       .trim();
     if (!cleaned) return '';
-    return cleaned.replace(/\w/g, ch => ch.toUpperCase());
+    return cleaned.replace(/\b\w/g, ch => ch.toUpperCase());
   } catch {
     return '';
   }
@@ -2264,71 +2783,54 @@ function normalizeHeadlineKey(title) {
     .toLowerCase()
     .replace(/&/g, ' and ')
     .replace(/[^a-z0-9]+/g, ' ')
-    .replace(/(world cup|fifa|2026|cup|the|a|an|and|for|to|of|on|in|latest|news|coverage)/g, ' ')
+    .replace(/\b(world cup|fifa|2026|cup|the|a|an|and|for|to|of|on|in|latest|news|coverage|match|matches|live)\b/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
 }
 
 function parseFeedItems(xmlText, source) {
   const doc = new DOMParser().parseFromString(xmlText, 'text/xml');
-  const nodes = Array.from(doc.querySelectorAll('item, entry')).slice(0, 10);
+  const nodes = Array.from(doc.querySelectorAll('item, entry')).slice(0, 12);
   return nodes.map(node => {
     const rawTitle = node.querySelector('title')?.textContent?.trim() || `${source.name} update`;
     const link = node.querySelector('link')?.textContent?.trim() || node.querySelector('link')?.getAttribute('href')?.trim() || source.searchUrl;
-    const pubDate = node.querySelector('pubDate, updated, published')?.textContent?.trim() || '';
-    const descriptionRaw = node.querySelector('description, summary, content')?.textContent || '';
-    const description = decodeHtml(descriptionRaw.replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim();
-
-    let title = cleanHeadlineTitle(rawTitle, source.name);
-    if (isGenericCoverageTitle(title, source.name) && description) title = cleanHeadlineTitle(firstSentence(description), source.name);
-    if (isGenericCoverageTitle(title, source.name) && link) title = cleanHeadlineTitle(headlineFromUrl(link), source.name);
-    if (isGenericCoverageTitle(title, source.name)) return null;
-
+    const pubRaw = node.querySelector('pubDate, updated, published')?.textContent?.trim() || '';
+    const title = cleanHeadlineTitle(rawTitle, source.name);
     return {
       source: source.name,
-      label: `${source.name} • ${title}`,
+      sourceAccent: source.accent,
       title,
       url: link,
-      publishedAt: Date.parse(pubDate) || 0,
-      description,
-      dedupeKey: normalizeHeadlineKey(title),
-      host: source.domain
+      label: `${source.name} • ${title}`,
+      summary: firstSentence(node.querySelector('description, summary, content')?.textContent || ''),
+      publishedAt: pubRaw ? new Date(pubRaw).toISOString() : null
     };
-  }).filter(item => item && item.title && item.url);
-}
-
-function dedupeNewsItems(items) {
-  const seenTitles = new Set();
-  const seenUrls = new Set();
-  const output = [];
-  for (const item of items.sort((a, b) => b.publishedAt - a.publishedAt)) {
-    const urlKey = String(item.url || '').split('?')[0];
-    const titleKey = item.dedupeKey || normalizeHeadlineKey(item.title);
-    if (!titleKey || seenTitles.has(titleKey) || seenUrls.has(urlKey)) continue;
-    seenTitles.add(titleKey);
-    seenUrls.add(urlKey);
-    output.push(item);
-  }
-  return output;
+  }).filter(item => item.title && !isGenericCoverageTitle(item.title, item.source));
 }
 
 async function loadLiveNews() {
   const status = document.getElementById('newsStatus');
-  if (status) status.textContent = 'LIVE FEEDS • Refreshing source headlines...';
+  if (status) status.textContent = 'LIVE FEEDS • Refreshing latest distinct headlines...';
   const settled = await Promise.allSettled(LIVE_NEWS_SOURCES.map(async source => {
-    const xmlText = await fetchFeedText(buildNewsFeedUrl(source));
-    return parseFeedItems(xmlText, source).slice(0, 3);
+    try {
+      const xmlText = await fetchFeedText(buildNewsFeedUrl(source));
+      const parsed = parseFeedItems(xmlText, source)
+        .filter(item => item.title && !isGenericCoverageTitle(item.title, source.name))
+        .map(item => ({ ...item, label: `${item.source} • ${item.title}` }))
+        .slice(0, 6);
+      return parsed.length ? parsed : NEWS_FALLBACK_LINKS.filter(item => item.source === source.name).map(item => ({ ...item, label: `${item.source} • ${item.title}` })).slice(0, 2);
+    } catch {
+      return NEWS_FALLBACK_LINKS.filter(item => item.source === source.name).map(item => ({ ...item, label: `${item.source} • ${item.title}` })).slice(0, 2);
+    }
   }));
-  const items = settled.filter(result => result.status === 'fulfilled').flatMap(result => result.value);
-  const uniqueItems = dedupeNewsItems(items);
-  if (uniqueItems.length) {
-    renderTickerItems(uniqueItems.slice(0, 18));
-    const liveCount = new Set(uniqueItems.map(item => item.source)).size;
-    if (status) status.textContent = `LIVE FEEDS • ${liveCount}/${LIVE_NEWS_SOURCES.length} sources active • Headlines refresh automatically`;
-  } else {
-    renderTickerItems(NEWS_FALLBACK_LINKS);
-    if (status) status.textContent = 'LIVE FEEDS • Showing source headlines fallback right now';
-  }
+  const items = settled.filter(result => result.status === 'fulfilled').flatMap(result => result.value || []);
+  const uniqueItems = dedupeNewsItems(items)
+    .filter(item => item.title && !isGenericCoverageTitle(item.title, item.source))
+    .sort((a, b) => new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0));
+  const displayItems = uniqueItems.length ? uniqueItems.slice(0, 30) : NEWS_FALLBACK_LINKS.map(item => ({ ...item, label: `${item.source} • ${item.title}` }));
+  renderTickerItems(displayItems);
+  const activeSources = new Set(displayItems.map(item => item.source)).size;
+  if (status) status.textContent = `LIVE FEEDS • ${activeSources}/${LIVE_NEWS_SOURCES.length} sources active • Latest headlines refresh automatically`;
 }
 
 function weatherCodeLabel(code) {
@@ -2473,14 +2975,7 @@ async function loadVenueWeatherData() {
       return new Intl.DateTimeFormat(undefined, { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }).format(start);
     }
     function getScheduleActionState(match) {
-      const start = parseMatchDateTime(match);
-      if (!start) return { type: 'none', label: `SCHEDULED • ${match.time}`, interactive: false };
-      const now = new Date();
-      const end = new Date(start.getTime() + 2 * 60 * 60 * 1000);
-      const isToday = now.getFullYear() === start.getFullYear() && now.getMonth() === start.getMonth() && now.getDate() === start.getDate();
-      if (now >= start && now <= end) return { type: 'live', label: 'LIVE NOW', interactive: true };
-      if (isToday && now < start) return { type: 'today', label: `TODAY • ${formatShortCountdown(start - now)}`, interactive: true };
-      return { type: 'none', label: `SCHEDULED • ${match.time}`, interactive: false };
+      return getMatchStatusMeta(match);
     }
     function buildWatchUrl(match) { return `https://www.google.com/search?q=${encodeURIComponent(`where to watch world cup ${match.home} vs ${match.away}`)}`; }
 
@@ -2493,18 +2988,22 @@ async function loadVenueWeatherData() {
         const dayNum = m.date.split(' ').pop();
         const month = m.date.split(', ')[1].split(' ')[0].slice(0,3).toUpperCase();
         const action = getScheduleActionState(m);
+        const status = renderStatusStack(action);
         card.innerHTML = `
           <div class="date-badge"><small>${month}</small><strong>${dayNum}</strong></div>
           <div>
-            <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:10px; flex-wrap:wrap;">
               <div class="meta-line">${m.stage === 'Group stage' ? `GROUP ${m.group}` : m.stage.toUpperCase()}</div>
-              <button type="button" id="upcoming-action-${i}" class="schedule-action-btn ${action.type === 'live' ? 'live' : action.type === 'today' ? 'today' : 'dim'}" ${action.interactive ? '' : 'disabled'} data-watch="${i}">${action.label}</button>
+              ${status.html}
             </div>
-            <div class="fixture-line">${m.homeFlag} ${m.home} vs ${m.away} ${m.awayFlag}</div>
+            <div class="fixture-line">${formatFixtureDisplay(m, action)}</div>
             <div class="local-kickoff-line">KICKOFF TIME • ${formatMatchLocalDateTime(m)}</div>
           </div>`;
-        const watchBtn = card.querySelector('[data-watch]');
-        if (watchBtn && action.interactive) watchBtn.addEventListener('click', e => { e.stopPropagation(); window.open(buildWatchUrl(m), '_blank', 'noopener,noreferrer'); });
+        const watchBtn = card.querySelector('.schedule-action-btn');
+        if (watchBtn && status.interactive) watchBtn.addEventListener('click', e => {
+          e.stopPropagation();
+          window.open(action.type === 'finished' ? WC_RESULTS_URL : buildWatchUrl(m), '_blank', 'noopener,noreferrer');
+        });
         card.addEventListener('mouseenter', () => focusMatch(m));
         card.addEventListener('mouseleave', clearMapHighlights);
         card.addEventListener('click', () => openModal(m));
@@ -2525,15 +3024,15 @@ async function loadVenueWeatherData() {
         const stage = m.stage === 'Group stage' ? `Group ${m.group}` : m.stage;
         const stageColor = m.stage === 'Group stage' ? groupColor(m.group) : (stagePalette[m.stage] || cssVar('--theme-cyan'));
         const action = getScheduleActionState(m);
-        tr.innerHTML = `<td>${m.date}</td><td>${m.time}</td><td><span class="stage-badge" style="--stage-color:${stageColor};">${stage}</span></td><td>${m.homeFlag} ${m.home} vs ${m.away} ${m.awayFlag}</td><td>${m.venue}</td><td class="schedule-action-cell"></td>`;
+        tr.innerHTML = `<td>${m.date}</td><td>${m.time}</td><td><span class="stage-badge" style="--stage-color:${stageColor};">${stage}</span></td><td>${formatFixtureDisplay(m, action)}</td><td>${m.venue}</td><td class="schedule-action-cell"></td>`;
         const actionCell = tr.querySelector('.schedule-action-cell');
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = `schedule-action-btn ${action.type === 'live' ? 'live' : action.type === 'today' ? 'today' : 'dim'}`;
-        btn.textContent = action.label;
-        if (action.interactive) btn.addEventListener('click', e => { e.stopPropagation(); window.open(buildWatchUrl(m), '_blank', 'noopener,noreferrer'); });
-        else btn.disabled = true;
-        actionCell.appendChild(btn);
+        const status = renderStatusStack(action);
+        actionCell.innerHTML = status.html;
+        const btn = actionCell.querySelector('.schedule-action-btn');
+        if (btn && status.interactive) btn.addEventListener('click', e => {
+          e.stopPropagation();
+          window.open(action.type === 'finished' ? WC_RESULTS_URL : buildWatchUrl(m), '_blank', 'noopener,noreferrer');
+        });
         tr.addEventListener('mouseenter', () => focusMatch(m));
         tr.addEventListener('mouseleave', clearMapHighlights);
         tr.addEventListener('click', () => openModal(m));
@@ -2561,16 +3060,17 @@ async function loadVenueWeatherData() {
       document.querySelectorAll('.group-tab').forEach((tab, idx) => tab.classList.toggle('active', String.fromCharCode(65 + idx) === letter));
       const data = GROUPS[letter];
       const color = groupColor(letter);
+      const table = (liveGroupTables && liveGroupTables[letter]) || buildStandingsFromMatches()[letter];
       document.getElementById('groupPanel').style.setProperty('--active-group', color);
       document.getElementById('groupTitle').textContent = `Group ${letter}`;
-      document.getElementById('groupMeta').textContent = `${data.teams.size} teams • ${data.fixtures.length} fixtures`;
+      document.getElementById('groupMeta').textContent = standingsMetaText(letter);
       const body = document.getElementById('groupBody');
       body.innerHTML = '';
-      Array.from(data.teams.entries()).forEach(([team, flag], idx) => {
+      (table?.rows || Array.from(data.teams.entries()).map(([team, flag]) => ({ team, flag, played:0, win:0, gd:0, pts:0 }))).forEach((row, idx) => {
         const tr = document.createElement('tr');
         tr.className = `group-team-row${idx < 2 ? ' qualified' : ''}`;
-        tr.innerHTML = `<td>[0${idx+1}]</td><td><span class="flag">${flag}</span>${team}</td><td>0</td><td>0</td><td>0</td><td style="font-weight:900; color:${color};">0</td>`;
-        tr.addEventListener('mouseenter', () => focusCountry(team));
+        tr.innerHTML = `<td>[${String(idx+1).padStart(2,'0')}]</td><td><span class="flag">${row.flag || data.teams.get(row.team) || ''}</span>${row.team}</td><td>${row.played || 0}</td><td>${row.win || 0}</td><td>${row.gd || 0}</td><td style="font-weight:900; color:${color};">${row.pts || 0}</td>`;
+        tr.addEventListener('mouseenter', () => focusCountry(row.team));
         tr.addEventListener('mouseleave', clearMapHighlights);
         body.appendChild(tr);
       });
@@ -2587,25 +3087,27 @@ async function loadVenueWeatherData() {
         subset.forEach(letter => {
           const data = GROUPS[letter];
           const color = groupColor(letter);
+          const table = (liveGroupTables && liveGroupTables[letter]) || buildStandingsFromMatches()[letter];
           const card = document.createElement('div');
           card.className = 'group-route-card searchable';
           card.style.setProperty('--group-color', color);
-          card.dataset.search = `group ${letter} ${Array.from(data.teams.keys()).join(' ')} ${data.fixtures.map(f => f.venue).join(' ')}`.toLowerCase();
-          card.innerHTML = `<div class="group-route-head"><span>Group ${letter}</span><small>${data.fixtures.length} fixtures</small></div>`;
+          card.dataset.search = `group ${letter} ${(table?.rows || []).map(r => r.team).join(' ')} ${data.fixtures.map(f => f.venue).join(' ')}`.toLowerCase();
+          card.innerHTML = `<div class="group-route-head"><span>Group ${letter}</span><small>${table?.provisional ? 'live order' : 'result order'}</small></div>`;
           const teamList = document.createElement('div');
           teamList.className = 'group-route-team-list';
-          Array.from(data.teams.entries()).forEach(([team, flag], idx) => {
-            const row = document.createElement('div');
-            row.className = 'group-route-team';
-            row.innerHTML = `<span class="group-route-rank">${idx + 1}</span><span class="group-route-label">${flag} ${team}</span><span class="group-route-tag">G${letter}</span>`;
-            row.addEventListener('mouseenter', () => focusCountry(team));
-            row.addEventListener('mouseleave', clearMapHighlights);
-            teamList.appendChild(row);
+          (table?.rows || Array.from(data.teams.entries()).map(([team, flag]) => ({team, flag}))).forEach((row, idx) => {
+            const displayFlag = row.flag || data.teams.get(row.team) || '';
+            const routeTag = `${row.pts || 0} pts • GD ${row.gd || 0}`;
+            const entry = document.createElement('div');
+            entry.className = 'group-route-team';
+            entry.innerHTML = `<span class="group-route-rank">${idx + 1}</span><span class="group-route-label">${displayFlag} ${row.team}</span><span class="group-route-tag">${routeTag}</span>`;
+            entry.addEventListener('mouseenter', () => focusCountry(row.team));
+            entry.addEventListener('mouseleave', clearMapHighlights);
+            teamList.appendChild(entry);
           });
-          const venues = [...new Set(data.fixtures.map(f => f.venue))].slice(0, 3).join(' • ');
           const note = document.createElement('div');
           note.className = 'group-route-note';
-          note.textContent = venues || 'Group route';
+          note.textContent = standingsMetaText(letter);
           card.appendChild(teamList);
           card.appendChild(note);
           target.appendChild(card);
@@ -2898,13 +3400,10 @@ function openModal(match) {
     }
 
     function updateCountdowns() {
-      upcomingMatches().forEach((m, i) => {
-        const btn = document.getElementById(`upcoming-action-${i}`); if (!btn) return;
-        const action = getScheduleActionState(m);
-        btn.textContent = action.label;
-        btn.className = `schedule-action-btn ${action.type === 'live' ? 'live' : action.type === 'today' ? 'today' : 'dim'}`;
-        btn.disabled = !action.interactive;
-      });
+      renderUpcoming();
+      renderScheduleTable();
+      if (activeGroup) renderGroup(activeGroup);
+      renderGroupRoutes();
     }
 
     function initMaps() {
@@ -2952,10 +3451,12 @@ function openModal(match) {
       fitBracketToView();
       initMaps();
       updateCountdowns();
+      loadLiveTournamentData().catch(() => {});
       loadLiveNews();
       loadVenueWeatherData();
       setInterval(updateCountdowns, 1000);
-      setInterval(loadLiveNews, 15 * 60 * 1000);
+      setInterval(() => loadLiveTournamentData().catch(() => {}), 30 * 1000);
+      setInterval(loadLiveNews, 5 * 60 * 1000);
       setInterval(loadVenueWeatherData, 10 * 60 * 1000);
       focusMatch(ALL_MATCHES[0]);
       setTimeout(() => {
